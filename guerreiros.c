@@ -22,7 +22,7 @@ int inicializarGuerreiros()
     Guerreiro leitura;
     
    	guerr = fopen("guerr.bin", "rb");
-    while(fread(&leitura, sizeof(Guerreiro), 1, guerr))
+    while(fread(&leitura, sizeof(Guerreiro), 1, guerr))//contar o que ja esta escrito
     	qtdGuerreiro++;
     	
     fclose(guerr);
@@ -104,7 +104,7 @@ Guerreiro* obterGuerreiroPeloCodigo(int codigo)
 		}		
 	}
 	
-	return NULL;//quando chega no final da função (após o FOR) precisa de return
+	return NULL;//quando chega no final da funï¿½ï¿½o (apï¿½s o FOR) precisa de return
 }
 
 int atualizarGuerreiro(char* mudanca, int m, int opcao,int codigo)
@@ -140,50 +140,62 @@ int atualizarGuerreiro(char* mudanca, int m, int opcao,int codigo)
 	free (warrior);//chamar free em DevolverLocacaoPeloCodigo e em atualizarGuerreiro
 }
 
-Guerreiro* obterGuerreiroPeloNome (char* nome)
+Guerreiro obterGuerreiroPeloNome (char* nome)
 {
-	Guerreiro* Warrior = (Guerreiro*) malloc (sizeof(Guerreiro));
-	
-	for (i = 0; i < qtdGuerreiro; i++)
-    {
-    	*Warrior = guerreiro[i];
-        if (strcmpi(nome, guerreiro[i].nome) == 0)
+	guerr = fopen("guerr.bin", "rb");
+	if (guerr == NULL)
+	{
+		exit(1);
+	}
+	Guerreiro warrior;
+	while(fread(&warrior, sizeof(Guerreiro), 1, guerr))
+	{
+        if (strcmpi(nome, warrior.nome) == 0)
         {
-            return Warrior;
+            return warrior;
         }
     }
 
-    return	Warrior = NULL;//quando chega no final da função (após o FOR) precisa de return
+	fclose(guerr);
+
+    return	warrior;//quando chega no final da funï¿½ï¿½o (apï¿½s o FOR) precisa de return
 }
 
 int ApagarGuerreiroPeloCodigo(int codigo)
 {
-	int porcentagemArrays = ARRSIZEGUERREIRO * 0.4;
-	
-    for(i = 0; i < qtdGuerreiro; i++)
-    {
 
-        if (guerreiro[i].codigo == codigo)
+	FILE* guerr_tmp;
+	int encontrado = 0;
+	guerr = fopen("guerr.bin", "rb");
+	if (guerr == NULL)
+	{
+		exit(1);
+	}
+
+	guerr_tmp = fopen("guerr_tmp.bin", "wb");
+	if (guerr_tmp == NULL)
+	{
+		exit(1);
+	}
+	Guerreiro warrior;
+	while(fread(&warrior, sizeof(Guerreiro), 1, guerr))
+	{
+        if (warrior.codigo == codigo)
         {
-			if (guerreiro[i].checarLocacao > 0)
-				return 3;
-            guerreiro[i] = guerreiro[qtdGuerreiro-1];
-            guerreiro[qtdGuerreiro - 1].codigo = 0;
-            qtdGuerreiro--;
-            if (porcentagemArrays == qtdGuerreiro && ARRSIZEGUERREIRO > 5)
-			{
-	    		Guerreiro* ArrayMenor = realloc (guerreiro, (qtdGuerreiro)  * sizeof(Guerreiro));
-	    		if (ArrayMenor != NULL)
-	    		{
-	    			ARRSIZEGUERREIRO = qtdGuerreiro;
-	    			guerreiro = ArrayMenor;
-	    			return 2;
-				}else return 0;	
-			}
-			return 1;
-        }
-    }
-    return 0;
+			encontrado = 1;
+        }else {
+			fwrite(&warrior, sizeof(Guerreiro), 1, guerr_tmp);
+		}
+	}
+	if (encontrado == 0)
+	{
+		return 2;
+	}
+	fclose(guerr);
+	fclose(guerr_tmp);
+	remove("guerr.bin");
+	rename("guerr_tmp.bin", "guerr.bin");
+    return 1;
 }
 
 

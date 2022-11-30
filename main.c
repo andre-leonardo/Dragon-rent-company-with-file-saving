@@ -26,9 +26,6 @@ void listarGuerreiros()
 				warrior.codigo, warrior.nome,
 				warrior.titulo, warrior.reino, warrior.checarLocacao);
 	fclose(guerr);
-
-    
-    
 }
 
 void funcaoCadastroGuerreiro()
@@ -64,17 +61,11 @@ void funcaoPesquisarGuerreiro()
     fflush(stdin);
     printf("Digite o nome do guerreiro: ");
 	scanf("%[^\n]s", procurado);
-	Guerreiro* warrior = obterGuerreiroPeloNome(procurado);
+	Guerreiro warrior = obterGuerreiroPeloNome(procurado);
 	
-	if (warrior == NULL)
-		printf("Nenhum guerreiro com este nome encontrado");
-	else{
-		printf("O codigo do guerreiro eh: %d\n", warrior->codigo);
-        printf("Seu reino eh: %s\n", warrior->reino);
-        printf("Seu titulo eh: %s\n", warrior->titulo);
-        free(warrior);
-		warrior = NULL;
-	}
+	printf("O codigo do guerreiro eh: %d\n", warrior.codigo);
+    printf("Seu reino eh: %s\n", warrior.reino);
+    printf("Seu titulo eh: %s\n", warrior.titulo);
 }
 
 void funcaoExcluirGuerreiro()
@@ -87,7 +78,7 @@ void funcaoExcluirGuerreiro()
 	if (r==1)
 		printf("Guerreiro APAGADO com sucesso!\n");
 	else if (r==2)
-		printf("Guerreiro APAGADO com sucesso!\nARRAY DIMINUIDO\n");
+		printf("Nenhum guerreiro com este codigo foi encontrado.\n");
 	else if (r==3)
 		printf("Para ser apagado do sistema o guerreiro deve devolver todos os seus dragoes antes!\n");
 	else
@@ -157,7 +148,7 @@ void listarElementos()
         if (element->codigo > 0)		
             printf("\n%d - %s, vulnerabilidade: %s\n\n",
             element->codigo, element->nome, element->vulnerabilidade);
-            free(element);//falta free em várias funções depois de chamar obterElementoPeloIndice
+            free(element);//falta free em vï¿½rias funï¿½ï¿½es depois de chamar obterElementoPeloIndice
     }
     if (QuantidadeElementos() == 0)
     {
@@ -213,7 +204,7 @@ void funcaoCadastroDragao()
 				{
 					printf("%s\n", element->nome);
 					strcpy(dragon.elemento, element->nome);
-					free(element);//falta free em várias funções depois de chamar obterElementoPeloIndice
+					free(element);//falta free em vï¿½rias funï¿½ï¿½es depois de chamar obterElementoPeloIndice
 					break;
 				}
 				
@@ -231,7 +222,7 @@ void funcaoCadastroDragao()
 		        
 		    check++;
 		    
-		    free(element);//falta free em várias funções depois de chamar obterElementoPeloIndice
+		    free(element);//falta free em vï¿½rias funï¿½ï¿½es depois de chamar obterElementoPeloIndice
 		        
 		    break;
 		}			
@@ -602,10 +593,6 @@ int main(int argc, char *argv[]){
         if (opcao == 0)
         {
             printf("Obrigado por utilizar este programa!");
-			encerraDragoes();
-			encerraElementos();
-			encerraGuerreiros();
-			encerraLocacoes();
             break;
         }
 
