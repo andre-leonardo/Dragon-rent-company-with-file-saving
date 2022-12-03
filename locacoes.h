@@ -1,3 +1,4 @@
+#include <stdio.h>
 typedef struct {
 	int codigoLocacao;
 	int codigoGuerreiroLocador;
@@ -5,11 +6,11 @@ typedef struct {
 	int quantidadeLocada;
 	int locacaoNaoDevolvida;
 	float valorDiario;
-	//REMOVI AS VARIAVEIS NOMEGUERREIROLOCADOR E NOME DRAGAOLOCADO
 	char dataInicio[30];
 	char dataFim[30];
 } Locacao;
 
+FILE* loca;
 
 int retornaTamanhoLocacoes();
 int inicializarLocacoes();

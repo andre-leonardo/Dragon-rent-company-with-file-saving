@@ -97,7 +97,7 @@ int atualizarGuerreiro(char* mudanca, int m, int opcao,int codigo)
 		fread(warrior, sizeof(Guerreiro), 1, guerr);
 		if (warrior->codigo == codigo)
 		{
-			break;
+			break;//salvar o valor de i
 		}
 	}
 	if (opcao == 1)
@@ -183,27 +183,28 @@ int registrarLocacaoGuerr(int cod, int aumentarOuDiminuir)
 {
 	int i;
 
+	Guerreiro* warrior = obterGuerreiroPeloCodigo(cod);
+
+	for(i = 0; i < qtdGuerreiro; i++)
+	{
+		fseek(guerr, i * sizeof(Guerreiro), SEEK_SET);
+		fread(warrior, sizeof(Guerreiro), 1, guerr);
+		if (warrior->codigo == cod)
+		{
+			break;
+		}
+	}
 	if (aumentarOuDiminuir == 1)
 	{
-		for (i = 0; i < qtdGuerreiro; i++)
-		{
-			if (guerreiro[i].codigo == cod)
-			{
-				guerreiro[i].checarLocacao = guerreiro[i].checarLocacao + 1;
-				break;
-			}
-		}	
+		warrior->checarLocacao = ++warrior->checarLocacao;
+		fseek(guerr, i * sizeof(Guerreiro), SEEK_SET);
+		fwrite(warrior, sizeof(Guerreiro), 1, guerr);
 	}
 	else
 	{
-		for (i = 0; i < qtdGuerreiro; i++)
-		{
-			if (guerreiro[i].codigo == cod)
-			{
-				guerreiro[i].checarLocacao = guerreiro[i].checarLocacao - 1;
-				break;
-			}
-		}	
+		warrior->checarLocacao = --warrior->checarLocacao;
+		fseek(guerr, i * sizeof(Guerreiro), SEEK_SET);
+		fwrite(warrior, sizeof(Guerreiro), 1, guerr);	
 	}
 }
 

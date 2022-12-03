@@ -464,11 +464,10 @@ void listarLocacoes()
 
 void funcaoRealizarLocacao()
 {
-	int opcao, i;
+	int opcao;
     Locacao location;
     int quantidade;
-	
-	location.codigoLocacao = QuantidadeLocacoes() + 1;
+
 	
 	listarGuerreiros();
 	printf("Digite o codigo do guerreiro: ");
@@ -508,6 +507,35 @@ void funcaoDevolverDragao()
 			printf("Locacao devolvida com sucesso!\n");
 		else
 			printf("Falha ao devolver a locacao !\n");
+	}
+}
+
+void funcaoPesquisarLocacao()
+{
+    char codigo;
+    int i;
+
+    fflush(stdin);
+    printf("Digite o codigo da locacao: ");
+	scanf("%d", &codigo);
+	Locacao* location = obterLocacaoPeloCodigo(codigo);
+	Guerreiro* warrior = obterGuerreiroPeloCodigo(location->codigoGuerreiroLocador);
+	Dragao* dragon = obterDragaoPeloCodigo(location->codigoDragaoLocado);
+	Elemento* element = obterElementoPeloCodigo(dragon->codigoElemento);
+	if (location == NULL)
+		printf("Nenhuma locacao com este codigo encontrada");
+	else{
+        printf("Nome do guerreiro: %s\n", warrior->nome);
+        printf("Titulo do guerreiro: %s\n", warrior->titulo);
+        printf("Nome do dragao: %s\n", dragon->nome);
+        printf("Elemento do dragao: %s\n", element->nome);
+        printf("Quantidade locada: %d\n", location->quantidadeLocada);
+        printf("Valor diario da locacao: %.2f\n", location->valorDiario);
+        
+        free(location);
+        free(warrior);
+        free(dragon);
+        free(element);
 	}
 }
 
@@ -556,7 +584,7 @@ void subMenuElemento()
 
 void subMenuLocacao()
 {
-	printf("0 - Sair\n1 - Locar Dragao\n2 - Listar Locacoes\n3 - Devolver\n4 - Excluir Locacao\n\n");	
+	printf("0 - Sair\n1 - Locar Dragao\n2 - Pesquisar\n3 - Devolver\n4 - Listar Locacoes\n5 - Excluir Locacao\n\n");	
 }
 
 int main(int argc, char *argv[]){
@@ -702,13 +730,17 @@ int main(int argc, char *argv[]){
 					funcaoRealizarLocacao();
 				else if (opcao == 2)
 	            {
-					listarLocacoes();
+					funcaoPesquisarLocacao();
 	            }
 				else if (opcao == 3)
 	            {
 					funcaoDevolverDragao();
 	            }
 				else if (opcao == 4)
+	            {
+					listarLocacoes();
+	            }
+	            else if (opcao == 5)
 	            {
 					ApagarLocacao();
 	            }

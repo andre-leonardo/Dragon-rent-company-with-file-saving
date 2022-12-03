@@ -202,14 +202,22 @@ int registrarMudancaDrag(int qtd, int cod)//alterar o valor de unidade
 	int i;
 	Dragao* dragon = obterDragaoPeloCodigo(cod);
 	for (i = 0; i < qtdDragao; i++)
+	{
+		fseek(drag, i * sizeof(Dragao), SEEK_SET);
+		fread(dragon, sizeof(Dragao), 1, drag);
+		if (dragon->codigo == cod)
 		{
-
-			if (dragao[i].codigo == dragon->codigo)
-			{
-				dragao[i].unidade = qtd;
-				return 0;
-			}
+			break;
 		}
+		if (dragao[i].codigo == dragon->codigo)
+		{
+			dragao[i].unidade = qtd;
+			return 0;
+		}
+	}
+	dragon->unidade = qtd;
+	fseek(drag, i * sizeof(Dragao), SEEK_SET);
+	fwrite(dragon, sizeof(Dragao), 1, drag);
 	return 1;
 }
 
@@ -217,27 +225,28 @@ int registrarLocacaoDrag(int cod, int aumentarOuDiminuir)
 {
 	int i;
 
+	Dragao* dragon = obterDragaoPeloCodigo(cod);
+
+	for(i = 0; i < qtdDragao; i++)
+	{
+		fseek(drag, i * sizeof(Dragao), SEEK_SET);
+		fread(dragon, sizeof(Dragao), 1, drag);
+		if (dragon->codigo == cod)
+		{
+			break;
+		}
+	}
 	if (aumentarOuDiminuir == 1)
 	{
-		for (i = 0; i < qtdDragao; i++)
-		{
-			if (dragao[i].codigo == cod)
-			{
-				dragao[i].checarLocacao = dragao[i].checarLocacao + 1;
-				return 1;
-			}
-		}	
+		dragon->checarLocacao = ++dragon->checarLocacao;
+		fseek(drag, i * sizeof(Dragao), SEEK_SET);
+		fwrite(dragon, sizeof(Dragao), 1, drag);
 	}
-	if (aumentarOuDiminuir == 2)
+	else
 	{
-		for (i = 0; i < qtdDragao; i++)
-		{
-			if (dragao[i].codigo == cod)
-			{
-				dragao[i].checarLocacao = dragao[i].checarLocacao - 1;
-				return 2;
-			}
-		}	
+		dragon->checarLocacao = --dragon->checarLocacao;
+		fseek(drag, i * sizeof(Dragao), SEEK_SET);
+		fwrite(dragon, sizeof(Dragao), 1, drag);	
 	}
 }
 

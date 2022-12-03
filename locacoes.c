@@ -6,15 +6,6 @@
 
 
 
-// char* time()
-// {
-//     struct tm *tempo;
-//     time_t segundos;
-//     time(&segundos); 
-//     tempo = localtime(&segundos);
-//     return asctime(tempo);
-// }
-
 int ARRSIZELOCACAO =  5;
 
 Locacao* locacao = NULL;
@@ -23,23 +14,26 @@ int qtdLocacao = 0, codigoAtualLocacoes = 0;
 
 int inicializarLocacoes()
 {
-	int i;
 	locacao = (Locacao*) malloc (ARRSIZELOCACAO * sizeof(Locacao));
     if (locacao == NULL)
 	{
 		return 0;
 	}
-	
-    for (i = 0; i < ARRSIZELOCACAO; i++)
-    {   	
-        locacao[i].codigoLocacao = 0;
-        locacao[i].codigoGuerreiroLocador = 0;
-        locacao[i].codigoDragaoLocado = 0;
-        locacao[i].quantidadeLocada = 0;
-        locacao[i].locacaoNaoDevolvida = 0;
-        strcpy(locacao[i].dataFim, "\0");
-        strcpy(locacao[i].dataInicio, "\0");
-    }
+	Locacao leitura;
+	fclose(loca);
+
+	loca = fopen("file_loca.bin", "r+b");
+	if (loca == NULL)
+	{
+		exit(1);
+	}
+	while(fread(&leitura, sizeof(Locacao), 1, loca))
+	{
+		if(leitura.codigoLocacao > codigoAtualLocacoes)
+			codigoAtualLocacoes = leitura.codigoLocacao;
+		qtdLocacao++;
+	}
+    return 1;
 
 }
 
@@ -50,36 +44,22 @@ int retornaTamanhoLocacoes()
 
 int encerraLocacoes()
 {
-    free(locacao);
+    fclose(loca);
 }
 
 int salvarLocacao(Locacao location, int codDrag, int codGuerr, int qtd)
 {
     int i; 
 
-    if (locacao != NULL)
-    {
-    	if (qtdLocacao == ARRSIZELOCACAO)
-    	{
-    		Locacao* locacaoBKP = locacao;
-    		locacao = realloc (locacao, (qtdLocacao * 2)  * sizeof(Locacao));
-    		if (locacao != NULL)
-    		{
-    			ARRSIZELOCACAO = ARRSIZELOCACAO *  2;
-			}
-			else {
-				locacao = locacaoBKP;
-				return 0;
-			}
-		}
+    
+
         for (i = 0; i < QuantidadeGuerreiros(); i++)
         {
             Guerreiro* warrior = obterGuerreiroPeloIndice(i);
             if (codGuerr == warrior->codigo)
             {
                 registrarLocacaoGuerr(codGuerr, 1);
-                
-                locacao[qtdLocacao].codigoGuerreiroLocador = warrior->codigo;
+                location.codigoGuerreiroLocador = codGuerr;
                 break;
             }
         }
@@ -93,42 +73,33 @@ int salvarLocacao(Locacao location, int codDrag, int codGuerr, int qtd)
                 {
                     return 2;
                 }
-                int b;
-                for (b = 0; b < ARRSIZELOCACAO; b++)
-                {
-                    if (locacao[b].codigoLocacao == 0)
-                    {
-                        dragon->unidade = dragon->unidade - qtd;
-                        registrarMudancaDrag(dragon->unidade, dragon->codigo);
-                        registrarLocacaoDrag(dragon->codigo, 1);
-                        for(i = 0; i < ARRSIZELOCACAO; i++)
-                            {
-                                if(locacao[i].codigoLocacao > codigoAtualLocacoes)//arrumar a geração de código.
-                                    codigoAtualLocacoes = locacao[i].codigoLocacao;
-                            }
-                        locacao[b].codigoLocacao = ++codigoAtualLocacoes;
-                        locacao[b].valorDiario = dragon->valor * qtd;
-                        locacao[b].codigoLocacao = qtdLocacao + 1;
-                        locacao[b].quantidadeLocada = qtd;
-                        locacao[b].codigoDragaoLocado = dragon->codigo;
-                        //<data
-                        struct tm *tempo;
-                        time_t segundos;
-                        time(&segundos); 
-                        tempo = localtime(&segundos);
+                
+                dragon->unidade = dragon->unidade - qtd;
+                registrarMudancaDrag(dragon->unidade, dragon->codigo);
+                registrarLocacaoDrag(dragon->codigo, 1);
 
-                        strcpy(locacao[b].dataInicio, asctime(tempo)); 
-                        //data>
+                location.codigoLocacao = ++codigoAtualLocacoes;
+                location.valorDiario = dragon->valor * qtd;
+                location.quantidadeLocada = qtd;
+                location.codigoDragaoLocado = dragon->codigo;
+                //<data
+                struct tm *tempo;
+                time_t segundos;
+                time(&segundos); 
+                tempo = localtime(&segundos);
 
-                        qtdLocacao++;
-                        locacao[b].locacaoNaoDevolvida = 1;
-                        return 1;
-                    }
-                }
+                strcpy(location.dataInicio, asctime(tempo)); 
+                //data>
+
+                qtdLocacao++;
+                location.locacaoNaoDevolvida = 1;
+                fseek(loca, 0, SEEK_END);
+                fwrite(&location, sizeof(Locacao), 1, loca);
+                return 1;
+                
             }
         }
-	}else    
-    	return 0;
+	
 }
 
 int QuantidadeLocacoes()
@@ -141,54 +112,28 @@ int QuantidadeLocacoes()
 Locacao* obterLocacaoPeloIndice(int indice)
 {
     Locacao* location = (Locacao*) malloc (sizeof(Locacao));
-	*location = locacao[indice];
+	fseek(loca, indice * sizeof(Locacao), SEEK_SET);
+	fread(location, sizeof(Locacao), 1, loca);
 	return location;
 }
 
 Locacao* obterLocacaoPeloCodigo(int codigo)
 {
     int i;
-	Locacao* Location = (Locacao*) malloc (sizeof(Locacao));
+	Locacao* location = (Locacao*) malloc (sizeof(Locacao));
 	for(i = 0; i < qtdLocacao; i++)
 	{
-		if (locacao[i].codigoLocacao == codigo)
+        fseek(loca, i * sizeof(Locacao), SEEK_SET);
+        fread(location, sizeof(Locacao), 1, loca);
+		if (location->codigoLocacao == codigo)
 		{
-			*Location = locacao[i];
-			return Location;
+			fwrite(location, sizeof(Locacao), 1, loca);
+			return location;
 		}		
 	}
 	return NULL;
 }
 
-Locacao* obterLocacaoPeloCodigoDragao(int codigo)
-{
-    int i;
-	Locacao* Location = (Locacao*) malloc (sizeof(Locacao));
-	for(i = 0; i < qtdLocacao; i++)
-	{
-		if (locacao[i].codigoDragaoLocado == codigo)
-		{
-			*Location = locacao[i];
-			return Location;
-		}		
-	}
-	return NULL;//falta return no final da fun��o obterLocacaoPeloCodigoDragao
-}
-
-Locacao* obterLocacaoPeloCodigoGuerreiro(int codigo)
-{
-    int i;
-	Locacao* Location = (Locacao*) malloc (sizeof(Locacao));
-	for(i = 0; i < qtdLocacao; i++)
-	{
-		if (locacao[i].codigoGuerreiroLocador == codigo)
-		{
-			*Location = locacao[i];
-			return Location;
-		}		
-	}
-	return NULL;
-}
 
 
 
@@ -263,3 +208,36 @@ int ExcluirLocacao(int codigo)
 }
 
 
+
+
+
+
+// Locacao* obterLocacaoPeloCodigoDragao(int codigo)
+// {
+//     int i;
+// 	Locacao* Location = (Locacao*) malloc (sizeof(Locacao));
+// 	for(i = 0; i < qtdLocacao; i++)
+// 	{
+// 		if (locacao[i].codigoDragaoLocado == codigo)
+// 		{
+// 			*Location = locacao[i];
+// 			return Location;
+// 		}		
+// 	}
+// 	return NULL;
+// }
+
+// Locacao* obterLocacaoPeloCodigoGuerreiro(int codigo)
+// {
+//     int i;
+// 	Locacao* Location = (Locacao*) malloc (sizeof(Locacao));
+// 	for(i = 0; i < qtdLocacao; i++)
+// 	{
+// 		if (locacao[i].codigoGuerreiroLocador == codigo)
+// 		{
+// 			*Location = locacao[i];
+// 			return Location;
+// 		}		
+// 	}
+// 	return NULL;
+// }
