@@ -4,21 +4,12 @@
 #include <string.h>
 
 
-int ARRSIZEELEMENTO =  5;
-
-Elemento* elemento = NULL;
 int qtdElemento = 0, codigoAtualElementos = 0;
 
 
 
 int inicializarElementos()
-{
-	elemento = (Elemento*) malloc (ARRSIZEELEMENTO * sizeof(Elemento));
-    if (elemento == NULL)
-	{
-		return 0;
-	}
-	
+{	
 	Elemento leitura;
 	fclose(elem);
 

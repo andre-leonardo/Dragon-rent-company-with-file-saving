@@ -2,24 +2,13 @@
 #include "locacoes.h"
 #include <stdlib.h>
 #include <string.h>
-int ARRSIZEGUERREIRO = 5;
 
-
-
-Guerreiro *guerreiro = NULL;
 int qtdGuerreiro = 0;
 int codigoAtualGuerreiros = 0;
 
 
 int inicializarGuerreiros()
 {
-	
-	guerreiro = (Guerreiro*) malloc (ARRSIZEGUERREIRO * sizeof(Guerreiro));
-	if (guerreiro == NULL)
-	{
-		return 0;
-	}
-	
     Guerreiro leitura;
     fclose(guerr);
     

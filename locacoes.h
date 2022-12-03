@@ -9,10 +9,9 @@ typedef struct {
 	char dataInicio[30];
 	char dataFim[30];
 } Locacao;
-
+FILE* loca_tmp;
 FILE* loca;
 
-int retornaTamanhoLocacoes();
 int inicializarLocacoes();
 int encerraLocacoes();
 int salvarLocacao(Locacao c, int codDrag, int codGuerr, int qtd);

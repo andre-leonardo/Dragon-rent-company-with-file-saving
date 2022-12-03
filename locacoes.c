@@ -6,21 +6,15 @@
 
 
 
-int ARRSIZELOCACAO =  5;
 
-Locacao* locacao = NULL;
 int qtdLocacao = 0, codigoAtualLocacoes = 0;
 
 
 int inicializarLocacoes()
 {
-	locacao = (Locacao*) malloc (ARRSIZELOCACAO * sizeof(Locacao));
-    if (locacao == NULL)
-	{
-		return 0;
-	}
 	Locacao leitura;
 	fclose(loca);
+    fclose(loca_tmp);
 
 	loca = fopen("file_loca.bin", "r+b");
 	if (loca == NULL)
@@ -37,10 +31,7 @@ int inicializarLocacoes()
 
 }
 
-int retornaTamanhoLocacoes()
-{
-	return ARRSIZELOCACAO;
-}
+
 
 int encerraLocacoes()
 {
@@ -183,39 +174,50 @@ int DevolverLocacaoPeloCodigo(int codigo)
     
     return 1;
     }
-    return 2;
-            
+
+    return 2;         
 }
 
 int ExcluirLocacao(int codigo)
 {
-    int i;
-    int porcentagemArrays = ARRSIZELOCACAO * 0.4;
+    Locacao* locations = obterLocacaoPeloCodigo(codigo);
+    if (locations->locacaoNaoDevolvida == 1)
+    {
+        free(locations);
+        return 0;
+    }
+    free(locations);
+    int i,encontrado = 0;
+    
+    loca_tmp = fopen("file_loca_tmp.bin", "wb");
+    if(loca_tmp == NULL)
+    {
+        exit(1);
+    }
+    Locacao* location = (Locacao*) malloc (sizeof(Locacao));
     for (i = 0; i < qtdLocacao; i++)
     {
-        
-        if (locacao[i].codigoLocacao == codigo)
+        fseek(loca, i * sizeof(Locacao), SEEK_SET);
+        fread(location, sizeof(Locacao), 1, loca);
+        if (location->codigoLocacao == codigo)
         {
-            if (locacao[i].locacaoNaoDevolvida == 1)
-            {
-                return 0;
-            }else{
-                locacao[i].codigoLocacao == 0;
-                qtdLocacao--;
-                if (porcentagemArrays == qtdLocacao && ARRSIZELOCACAO > 5)
-                {
-                    Dragao* ArrayMenor = realloc (locacao, (qtdLocacao) * sizeof(Locacao));
-                    if (ArrayMenor != NULL)
-                    {
-                        ARRSIZELOCACAO = qtdLocacao;
-                        locacao = ArrayMenor;
-                        return 2;
-                    }else return 0;
-                }
-                return 1;
-            }
+            encontrado = 1;
         }
+        else fwrite(location, sizeof(Locacao), 1, loca_tmp);
     }
+    if (encontrado == 0)
+        return 1;
+    fclose(loca_tmp);
+    fclose(loca);
+    remove("file_loca.bin");
+    rename("file_loca_tmp.bin", "file_loca.bin");
+    loca = fopen("file_loca.bin", "r+b");
+    if (guerr == NULL)
+    {
+        exit(1);
+    }
+    qtdLocacao--;
+    return 2;
 }
 
 

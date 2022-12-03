@@ -5,21 +5,14 @@
 #include <string.h>
 #include <stdio.h>
 
-int ARRSIZEDRAGAO =  5;
 
 
-Dragao* dragao = NULL;
 int qtdDragao = 0;
 int codigoAtualDragoes = 0;
 
 
 int inicializarDragoes()
 {
-    dragao = (Dragao*) malloc (ARRSIZEDRAGAO * sizeof(Dragao));
-    if (dragao == NULL)
-	{
-		return 0;
-	}
 
 	Dragao leitura;
 	fclose(drag);

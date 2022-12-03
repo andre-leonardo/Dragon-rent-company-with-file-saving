@@ -556,11 +556,11 @@ void ApagarLocacao()
 		scanf("%d", &codigo);
 		r = ExcluirLocacao(codigo);
 		if (r == 0)
-			printf("Nao e possivel excluir locacoes nao devolvidas\n");
+			printf("Nao eh possivel excluir locacoes nao devolvidas\n");
+		if (r == 1)
+		printf("Nenhuma locacao com esse codigo foi encontrada\n");
 		else 
 			printf("Locacao apagada com sucesso\n");
-		if (r == 2)
-			printf("ARRAY DIMINUIDO");
 	}
 }
 
