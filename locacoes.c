@@ -60,6 +60,7 @@ int salvarLocacao(Locacao location, int codDrag, int codGuerr, int qtd)
             {
                 registrarLocacaoGuerr(codGuerr, 1);
                 location.codigoGuerreiroLocador = codGuerr;
+                free(warrior);
                 break;
             }
         }
@@ -95,6 +96,7 @@ int salvarLocacao(Locacao location, int codDrag, int codGuerr, int qtd)
                 location.locacaoNaoDevolvida = 1;
                 fseek(loca, 0, SEEK_END);
                 fwrite(&location, sizeof(Locacao), 1, loca);
+                free(dragon);
                 return 1;
                 
             }
@@ -139,40 +141,49 @@ Locacao* obterLocacaoPeloCodigo(int codigo)
 
 int DevolverLocacaoPeloCodigo(int codigo)
 {
-    int i, b;
+    int i;
     Locacao* location = obterLocacaoPeloCodigo(codigo);
+    if(location->locacaoNaoDevolvida > 0)
+    {
+    Guerreiro* warrior = obterGuerreiroPeloCodigo(location->codigoGuerreiroLocador);
 
-    Guerreiro* guerreiro = obterGuerreiroPeloCodigo(location->codigoGuerreiroLocador);
+    Dragao* dragon = obterDragaoPeloCodigo(location->codigoDragaoLocado);
+    dragon->unidade = dragon->unidade + location->quantidadeLocada;
+    registrarMudancaDrag(dragon->unidade, dragon->codigo);
 
-    Dragao* dragao = obterDragaoPeloCodigo(location->codigoDragaoLocado);
-    dragao->unidade = dragao->unidade + location->quantidadeLocada;
-    registrarMudancaDrag(dragao->unidade, dragao->codigo);
+    registrarLocacaoGuerr(warrior->codigo, 2);
+    registrarLocacaoDrag(dragon->codigo, 2);
 
-    registrarLocacaoGuerr(guerreiro->codigo, 2);
-    registrarLocacaoDrag(dragao->codigo, 2);
-
+    for (i = 0; i < qtdLocacao; i++)
+	{
+		fseek(loca, i * sizeof(Dragao), SEEK_SET);
+		fread(location, sizeof(Dragao), 1, loca);
+		if (location->codigoLocacao == codigo)
+		{
+			break;
+		}
+	}
     //<data   
     struct tm *tempo;
     time_t segundos;
     time(&segundos); 
     tempo = localtime(&segundos);
-    for (i = 0; i < qtdLocacao; i++)
-    {
-        if (locacao[i].codigoLocacao == location->codigoLocacao)
-        {
-            locacao[i].locacaoNaoDevolvida = 0;
-            strcpy(locacao[i].dataFim, asctime(tempo)); 
-            break;
-        } 
-    }
+    location->locacaoNaoDevolvida = 0;
+    strcpy(location->dataFim, asctime(tempo)); 
+    fseek(loca, i * sizeof(Locacao), SEEK_SET);
+	fwrite(location, sizeof(Locacao), 1, loca);
+        
+
     //data>
     
     free(location);
-    free(guerreiro);
-    free(dragao);//chamar free em DevolverLocacaoPeloCodigo e em atualizarGuerreiro
+    free(warrior);
+    free(dragon);
     
     
     return 1;
+    }
+    return 2;
             
 }
 

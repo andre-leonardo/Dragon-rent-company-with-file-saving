@@ -200,7 +200,7 @@ int ApagarDragaoPeloCodigo(int codigo)
 int registrarMudancaDrag(int qtd, int cod)//alterar o valor de unidade
 {
 	int i;
-	Dragao* dragon = obterDragaoPeloCodigo(cod);
+	Dragao* dragon = (Dragao*) malloc (sizeof(Dragao));
 	for (i = 0; i < qtdDragao; i++)
 	{
 		fseek(drag, i * sizeof(Dragao), SEEK_SET);
@@ -209,15 +209,11 @@ int registrarMudancaDrag(int qtd, int cod)//alterar o valor de unidade
 		{
 			break;
 		}
-		if (dragao[i].codigo == dragon->codigo)
-		{
-			dragao[i].unidade = qtd;
-			return 0;
-		}
 	}
 	dragon->unidade = qtd;
 	fseek(drag, i * sizeof(Dragao), SEEK_SET);
 	fwrite(dragon, sizeof(Dragao), 1, drag);
+	free(dragon);
 	return 1;
 }
 
@@ -225,7 +221,7 @@ int registrarLocacaoDrag(int cod, int aumentarOuDiminuir)
 {
 	int i;
 
-	Dragao* dragon = obterDragaoPeloCodigo(cod);
+	Dragao* dragon = (Dragao*) malloc (sizeof(Dragao));
 
 	for(i = 0; i < qtdDragao; i++)
 	{
@@ -248,6 +244,7 @@ int registrarLocacaoDrag(int cod, int aumentarOuDiminuir)
 		fseek(drag, i * sizeof(Dragao), SEEK_SET);
 		fwrite(dragon, sizeof(Dragao), 1, drag);	
 	}
+	free(dragon);
 }
 
 

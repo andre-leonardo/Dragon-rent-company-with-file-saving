@@ -380,10 +380,14 @@ void funcaoExcluirElemento()
     int codigo;
     printf("Digite o codigo do elemento  que deseja APAGAR: ");
 	scanf("%d", &codigo);
-	if (ApagarElementoPeloCodigo(codigo)==1)
+
+	int r = ApagarElementoPeloCodigo(codigo);
+	if (r==1)
 		printf("Elemento APAGADO com sucesso!\n");
-	if (ApagarElementoPeloCodigo(codigo)==2)
-		printf("Elemento APAGADO com sucesso!\nARRAY DIMINUIDO\n");
+	else if (r==2)
+		printf("Nenhum elemento com esse codigo foi encontrado\n");
+	else if (r==3)
+		printf("Um dragao esta usando esse codigo, eh preciso apaga-lo antes\n");
 	else
 		printf("Falha ao apagar o elemento !\n");
 }
@@ -456,7 +460,6 @@ void listarLocacoes()
 				location->codigoLocacao, location->quantidadeLocada, dragon->nome, 
 				warrior->nome, location->valorDiario, location->dataInicio, location->dataFim);
 				free(location);
-				break;
 		    }
 		}
 	}
@@ -505,8 +508,10 @@ void funcaoDevolverDragao()
 		scanf("%d", &codigo);
 		if (DevolverLocacaoPeloCodigo(codigo) == 1)
 			printf("Locacao devolvida com sucesso!\n");
+		else if(DevolverLocacaoPeloCodigo(codigo) == 2)
+			printf("Locacao ja devolvida!\n");
 		else
-			printf("Falha ao devolver a locacao !\n");
+			printf("Falha ao devolver a locacao!\n");
 	}
 }
 

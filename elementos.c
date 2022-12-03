@@ -92,10 +92,12 @@ Elemento* obterElementoPeloCodigo(int codigo)
 int atualizarElemento(char* mudanca, int m,int opcao,int codigo)
 {
 	int i;
-	Elemento* element = obterElementoPeloCodigo(codigo);
+	Elemento* element = (Elemento*) malloc (sizeof(Elemento));
 	for(i = 0; i < qtdElemento; i++)
 	{
-		if (element->codigo == elemento[i].codigo)
+		fseek(elem, i * sizeof(Elemento), SEEK_SET);
+		fread(element, sizeof(Elemento), 1, elem);
+		if (element->codigo == codigo)
 		{
 			break;
 		}
@@ -108,12 +110,11 @@ int atualizarElemento(char* mudanca, int m,int opcao,int codigo)
 	}
 	else if (opcao == 2)
 	{
-		strcpy(element->nome, mudanca);
+		strcpy(element->vulnerabilidade, mudanca);
 		fseek(elem, i * sizeof(Elemento), SEEK_SET);
 		fwrite(element, sizeof(Elemento), 1, elem);
 	}
-	
-	free(element);//falta free ap�s chamar obterElementoPeloCodigo
+	free(element);
 	
 	return 0;
 }
@@ -136,12 +137,23 @@ Elemento* obterElementoPeloNome (char* nome)
 
 int ApagarElementoPeloCodigo(int codigo)
 {
+
 	int i;
-	FILE* drag_tmp;
+	for(i = 0; i < QuantidadeDragoes(); i++)
+	{
+		Dragao* dragon = obterDragaoPeloIndice(i);
+		if(dragon->codigoElemento == codigo)
+		{
+			free(dragon);
+			return 3;
+		}
+	}
+	
+	FILE* elem_tmp;
 	int encontrado = 0;
 
-	drag_tmp = fopen("file_elem_tmp.bin", "wb");
-	if (drag_tmp == NULL)
+	elem_tmp = fopen("file_elem_tmp.bin", "wb");
+	if (elem_tmp == NULL)
 	{
 		exit(1);
 	}
@@ -154,14 +166,14 @@ int ApagarElementoPeloCodigo(int codigo)
 		{
 			encontrado = 1;
 		}else {
-			fwrite(&element, sizeof(Elemento), 1, drag_tmp);
+			fwrite(&element, sizeof(Elemento), 1, elem_tmp);
 		}
 	}
 	if (encontrado == 0)
 	{
 		return 2;
 	}
-	fclose(drag_tmp);
+	fclose(elem_tmp);
 	fclose(elem);
 	remove("file_elem.bin");
 	rename("file_elem_tmp.bin", "file_elem.bin");
