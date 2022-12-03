@@ -5,7 +5,8 @@ typedef struct {
 	int quantidadeLocada;
 	int locacaoNaoDevolvida;
 	float valorDiario;
-	//REMOVI AS VARIAVEIS NOMEGUERREIROLOCADOR E NOME DRAGAOLOCADO
+	char nomeGuerreiroLocador[30];
+	char nomeDragaoLocado[30];
 	char dataInicio[30];
 	char dataFim[30];
 } Locacao;

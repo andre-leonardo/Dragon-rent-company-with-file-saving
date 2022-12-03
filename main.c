@@ -14,25 +14,27 @@
 
 void listarGuerreiros()
 {
-	
-	guerr = fopen("guerr.bin", "rb");
-	if (guerr == NULL)
-	{
-		exit(1);
+	int i;
+	if (QuantidadeGuerreiros() == 0)
+    {
+        printf("NENHUM GUERREIRO CADASTRADO\n");
+    }else{
+		for (i = 0; i < QuantidadeGuerreiros(); i++)
+		{
+			Guerreiro* warrior = obterGuerreiroPeloIndice(i);
+			printf("\n%d - %s, titulo: %s, reino: %s, quantidade de locacoes no momento: %d\n\n",
+				warrior->codigo, warrior->nome,
+				warrior->titulo, warrior->reino, warrior->checarLocacao);
+			free(warrior);
+		}
 	}
-	Guerreiro warrior;
-	while(fread(&warrior, sizeof(Guerreiro), 1, guerr))
-		printf("\n%d - %s, titulo: %s, reino: %s, quantidade de locacoes no momento: %d\n\n",
-				warrior.codigo, warrior.nome,
-				warrior.titulo, warrior.reino, warrior.checarLocacao);
-	fclose(guerr);
 }
 
 void funcaoCadastroGuerreiro()
 {
     Guerreiro warrior;
 
-	warrior.codigo = QuantidadeGuerreiros() + 1;
+	
 
 	fflush(stdin);
 	printf("Digite o nome do guerreiro: ");
@@ -61,11 +63,13 @@ void funcaoPesquisarGuerreiro()
     fflush(stdin);
     printf("Digite o nome do guerreiro: ");
 	scanf("%[^\n]s", procurado);
-	Guerreiro warrior = obterGuerreiroPeloNome(procurado);
+	Guerreiro* warrior = obterGuerreiroPeloNome(procurado);
+
+	printf("O codigo do guerreiro eh: %d\n", warrior->codigo);
+	printf("Seu titulo eh: %s\n", warrior->titulo);
+    printf("Seu reino eh: %s\n", warrior->reino);
 	
-	printf("O codigo do guerreiro eh: %d\n", warrior.codigo);
-    printf("Seu reino eh: %s\n", warrior.reino);
-    printf("Seu titulo eh: %s\n", warrior.titulo);
+	free(warrior);
 }
 
 void funcaoExcluirGuerreiro()
@@ -459,10 +463,11 @@ void listarLocacoes()
 			Locacao* location = obterLocacaoPeloIndice(i);
 			if (location->codigoLocacao > 0)
 			{
-						
+				Guerreiro* warrior = obterGuerreiroPeloCodigo(location->codigoGuerreiroLocador);
+				Dragao* dragon = obterDragaoPeloCodigo(location->codigoDragaoLocado);	
 				printf("\n%d - %d unidades de %s, locado por: %s pela bagatela de %.2f dinheiros diarios | inicio da locacao: %s | fim da locacao: %s\n\n",
-				location->codigoLocacao, location->quantidadeLocada, location->nomeDragaoLocado, 
-				location->nomeGuerreiroLocador, location->valorDiario, location->dataInicio, location->dataFim);
+				location->codigoLocacao, location->quantidadeLocada, dragon->nome, 
+				warrior->nome, location->valorDiario, location->dataInicio, location->dataFim);
 				free(location);
 				break;
 		    }
@@ -727,5 +732,9 @@ int main(int argc, char *argv[]){
 		
 		opcao = 1;
     } while(opcao != 0);
+    encerraGuerreiros();
+    encerraDragoes();
+    encerraElementos();
+    encerraLocacoes();
 	return 0;
 }

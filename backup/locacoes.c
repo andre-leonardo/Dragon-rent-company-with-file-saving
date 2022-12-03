@@ -18,12 +18,11 @@
 int ARRSIZELOCACAO =  5;
 
 Locacao* locacao = NULL;
-int qtdLocacao = 0, codigoAtualLocacoes = 0;
+int i, qtdLocacao = 0;
 
 
 int inicializarLocacoes()
 {
-	int i;
 	locacao = (Locacao*) malloc (ARRSIZELOCACAO * sizeof(Locacao));
     if (locacao == NULL)
 	{
@@ -74,14 +73,14 @@ int salvarLocacao(Locacao location, int codDrag, int codGuerr, int qtd)
 		}
         for (i = 0; i < QuantidadeGuerreiros(); i++)
         {
-            Guerreiro* warrior = obterGuerreiroPeloIndice(i);
-            if (codGuerr == warrior->codigo)
-            {
-                registrarLocacaoGuerr(codGuerr, 1);
-                
-                locacao[qtdLocacao].codigoGuerreiroLocador = warrior->codigo;
-                break;
-            }
+            // Guerreiro warrior = obterGuerreiroPeloIndice(i);
+            // if (codGuerr == warrior->codigo)
+            // {
+            //     registrarLocacaoGuerr(codGuerr, 1);
+            //     strcpy(locacao[qtdLocacao].nomeGuerreiroLocador, warrior->nome);
+            //     locacao[qtdLocacao].codigoGuerreiroLocador = warrior->codigo;
+            //     break;
+            // }
         }
 
         for (i = 0; i < QuantidadeDragoes(); i++)
@@ -99,14 +98,9 @@ int salvarLocacao(Locacao location, int codDrag, int codGuerr, int qtd)
                     if (locacao[b].codigoLocacao == 0)
                     {
                         dragon->unidade = dragon->unidade - qtd;
+                        strcpy(locacao[b].nomeDragaoLocado, dragon->nome);
                         registrarMudancaDrag(dragon->unidade, dragon->codigo);
                         registrarLocacaoDrag(dragon->codigo, 1);
-                        for(i = 0; i < ARRSIZELOCACAO; i++)
-                            {
-                                if(locacao[i].codigoLocacao > codigoAtualLocacoes)//arrumar a geração de código.
-                                    codigoAtualLocacoes = locacao[i].codigoLocacao;
-                            }
-                        locacao[b].codigoLocacao = ++codigoAtualLocacoes;
                         locacao[b].valorDiario = dragon->valor * qtd;
                         locacao[b].codigoLocacao = qtdLocacao + 1;
                         locacao[b].quantidadeLocada = qtd;
@@ -119,7 +113,6 @@ int salvarLocacao(Locacao location, int codDrag, int codGuerr, int qtd)
 
                         strcpy(locacao[b].dataInicio, asctime(tempo)); 
                         //data>
-
                         qtdLocacao++;
                         locacao[b].locacaoNaoDevolvida = 1;
                         return 1;
@@ -135,8 +128,6 @@ int QuantidadeLocacoes()
 {
     return qtdLocacao;
 }
-
-
 
 Locacao* obterLocacaoPeloIndice(int indice)
 {
@@ -157,7 +148,6 @@ Locacao* obterLocacaoPeloCodigo(int codigo)
 			return Location;
 		}		
 	}
-	return NULL;
 }
 
 Locacao* obterLocacaoPeloCodigoDragao(int codigo)
@@ -187,7 +177,6 @@ Locacao* obterLocacaoPeloCodigoGuerreiro(int codigo)
 			return Location;
 		}		
 	}
-	return NULL;
 }
 
 
@@ -262,4 +251,33 @@ int ExcluirLocacao(int codigo)
     }
 }
 
+int atualizarLocacao(char* mudanca, int m, int opcao, int codigo)
+{
+    int i;
+    if (opcao == 1)
+    {
+        Locacao* location = obterLocacaoPeloCodigoDragao(codigo);
+        for(i = 0; i < qtdLocacao; i++)
+		{
+			if (location->codigoDragaoLocado == locacao[i].codigoDragaoLocado)
+			{
+				strcpy(locacao[i].nomeDragaoLocado, mudanca);
+				break;
+			}
+		}
+		free(location);//chamar free ap�s usar a fun��o obterLocacaoPeloCodigoDragao
+    }
 
+    else if (opcao == 2)
+    {
+        Locacao* location = obterLocacaoPeloCodigoGuerreiro(codigo);
+        for(i = 0; i < qtdLocacao; i++)
+		{
+			if (location->codigoGuerreiroLocador == locacao[i].codigoGuerreiroLocador)
+			{
+				strcpy(locacao[i].nomeGuerreiroLocador, mudanca);
+				break;
+			}
+		}
+    }
+}

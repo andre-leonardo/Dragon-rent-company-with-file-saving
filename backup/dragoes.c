@@ -9,171 +9,56 @@ int ARRSIZEDRAGAO =  5;
 
 
 Dragao* dragao = NULL;
-int qtdDragao = 0, codigoAtualDragoes = 0;
+int i, qtdDragao = 0;
 
 
 int inicializarDragoes()
 {
-	int i;
     dragao = (Dragao*) malloc (ARRSIZEDRAGAO * sizeof(Dragao));
     if (dragao == NULL)
 	{
 		return 0;
 	}
 
-	Dragao leitura;
-	drag = fopen("drag.bin", "r+b");
-	if (drag == NULL)
-	{
-		exit(1);
-	}
-	while(fread(&leitura, sizeof(Dragao), 1, drag))
-	{
-		if(leitura.codigo > codigoAtualDragoes)
-			codigoAtualDragoes = leitura.codigo;
-		qtdDragao++;
-	}
-    return 1;
+    for (i = 0; i < ARRSIZEDRAGAO; i++)
+    {   	
+        dragao[i].codigo = 0;
+        // dragao[i].nome[0] = '\0';
+        dragao[i].idade = 0;
+        dragao[i].valor = 0;
+        dragao[i].unidade = 0;
+        // dragao[i].elemento[0] = '\0';
+        dragao[i].checarLocacao = 0;
+        // dragao[i].unidadeAnterior[i] = 0;
+    }
+        return 1;
 }
 
 
 int encerraDragoes()
 {
-	fclose(drag);
+	free(dragao);
 }
 
 
 
 int salvarDragao(Dragao dragon)
 { 
-	dragon.codigo = ++codigoAtualDragoes;
+        
+	drag = fopen("drago.bin", "ab");
+	if (drag == NULL)
+	{
+		exit(1);
+	}
 
-	fseek(drag, 0, SEEK_END);
 	fwrite(&dragon, sizeof(Dragao), 1, drag);
-
-	qtdDragao++;
-
-    return 1;
+	fclose(drag);
 }
 
 int QuantidadeDragoes()
 {
     return qtdDragao;
 }
-
-
-Dragao* obterDragaoPeloIndice(int indice)
-{
-    Dragao* dragon = (Dragao*) malloc (sizeof(Dragao));
-	fseek(drag, indice * sizeof(Dragao), SEEK_SET);
-	fread(dragon, sizeof(Dragao), 1, drag);
-
-	return dragon;
-}
-
-Dragao* obterDragaoPeloCodigo(int codigo)
-{
-	int i;
-	Dragao* dragon = (Dragao*) malloc (sizeof(Dragao));
-	for(i = 0; i < qtdDragao; i++)
-	{
-		fseek(drag, i * sizeof(Dragao), SEEK_SET);
-		fread(dragon, sizeof(Dragao), 1, drag);
-		if (dragon->codigo == codigo)
-		{
-			fwrite(dragon, sizeof(Dragao), 1, drag);
-			return dragon;
-		}
-	}
-	return NULL;
-}
-
-int atualizarDragao(int mudancaInt, char* mudanca, int m, int opcao,int codigo)
-{
-	int i;
-	Dragao* dragon = obterDragaoPeloCodigo(codigo);
-	for(i = 0; i < qtdDragao; i++)
-	{
-		fseek(drag, i * sizeof(Dragao), SEEK_SET);
-		fread(dragon, sizeof(Dragao), 1, drag);
-		if (dragon->codigo == codigo)
-		{
-			break;
-		}
-	}
-	if (opcao == 1)
-	{
-		strcpy(dragon->nome, mudanca);
-		fseek(drag, i * sizeof(Dragao), SEEK_SET);
-		fwrite(dragon, sizeof(Dragao), 1, drag);
-	}	
-	else if (opcao == 2)
-	{
-		dragon->idade = mudancaInt;
-		fseek(drag, i * sizeof(Dragao), SEEK_SET);
-		fwrite(dragon, sizeof(Dragao), 1, drag);
-	}
-	else if (opcao == 3)
-	{
-		Elemento* element = obterElementoPeloCodigo(mudancaInt);
-		dragon->codigoElemento = element->codigo;
-		free(element);//falta free apï¿½s chamar obterElementoPeloCodigo
-	}
-	else if (opcao == 4)
-		dragon->valor = mudancaInt;
-	else if (opcao == 5)
-		dragon->unidade = mudancaInt;
-		
-	free(dragon);//na funï¿½ï¿½o DevolverLocacaoPeloCodigo, precisa de free. a mesma coisa em registrarMudancaDrag e em atualizarDragao
-	return 0;
-}
-
-Dragao* obterDragaoPeloNome (char* nome)
-{
-	int i;
-	Dragao* Dragon = (Dragao*) malloc (sizeof(Dragao));
-	
-	for (i = 0; i < qtdDragao; i++)
-    {
-    	*Dragon = dragao[i];
-        if (strcmpi(nome, dragao[i].nome) == 0)
-            return Dragon;
-    }
-    
-    return Dragon = NULL;//falta return no final da funï¿½ï¿½o obterDragaoPeloNome
-}
-
-int ApagarDragaoPeloCodigo(int codigo)
-{
-	int i;
-	int porcentagemArrays = ARRSIZEDRAGAO * 0.4;
-
-    for(i = 0; i < qtdDragao; i++)
-    {
-        if (dragao[i].codigo == codigo)
-        {
-			if (dragao[i].checarLocacao > 0)
-				return 3;
-            dragao[i] = dragao[qtdDragao-1];
-            dragao[qtdDragao - 1].codigo = 0;
-            qtdDragao--;
-			if (porcentagemArrays == qtdDragao && ARRSIZEDRAGAO > 5)
-			{
-				Dragao* ArrayMenor = realloc (dragao, (qtdDragao) * sizeof(Dragao));
-				if (ArrayMenor != NULL)
-				{
-					ARRSIZEDRAGAO = qtdDragao;
-					dragao = ArrayMenor;
-					return 2;
-				}else return 0;
-			}
-            return 1;
-        }
-    }
-    return 0;
-}
-
-
 int registrarMudancaDrag(int qtd, int cod)//alterar o valor de unidade
 {
 	int i;
@@ -216,6 +101,113 @@ int registrarLocacaoDrag(int cod, int aumentarOuDiminuir)
 			}
 		}	
 	}
+}
+
+Dragao* obterDragaoPeloIndice(int indice)
+{
+    Dragao* dragon = (Dragao*) malloc (sizeof(Dragao));
+	*dragon = dragao[indice];
+	return dragon;
+}
+
+Dragao* obterDragaoPeloCodigo(int codigo)
+{
+	int i;
+	Dragao* Dragon = (Dragao*) malloc (sizeof(Dragao));
+	for(i = 0; i < qtdDragao; i++)
+	{
+		if (dragao[i].codigo == codigo)
+		{
+			*Dragon = dragao[i];
+			return Dragon;
+		}		
+	}
+}
+
+int atualizarDragao(int mudancaInt, char* mudanca, int m, int opcao,int codigo)
+{
+	int i, b;
+	Dragao* dragon = obterDragaoPeloCodigo(codigo);
+	for(i = 0; i < qtdDragao; i++)
+	{
+		if (dragon->codigo == dragao[i].codigo)
+		{
+			break;
+		}
+	}
+	if (opcao == 1)
+	{
+		strcpy(dragao[i].nome, mudanca);
+		for (b = 0; b < QuantidadeLocacoes(); b++)
+		{
+			Locacao* locacao = obterLocacaoPeloIndice(b);
+			if (locacao->codigoDragaoLocado == codigo)
+			{
+				atualizarLocacao(mudanca, 30, 1, codigo);
+				free(locacao);
+				break;
+			}
+		}
+	}	
+	else if (opcao == 2)
+		dragao[i].idade = mudancaInt;
+	else if (opcao == 3)
+	{
+		Elemento* element = obterElementoPeloCodigo(mudancaInt);
+		dragao[i].codigoElemento = element->codigo;
+		strcpy(dragao[i].elemento, element->nome);
+		free(element);//falta free após chamar obterElementoPeloCodigo
+	}
+	else if (opcao == 4)
+		dragao[i].valor = mudancaInt;
+	else if (opcao == 5)
+		dragao[i].unidade = mudancaInt;
+		
+	free(dragon);//na função DevolverLocacaoPeloCodigo, precisa de free. a mesma coisa em registrarMudancaDrag e em atualizarDragao
+	return 0;
+}
+
+Dragao* obterDragaoPeloNome (char* nome)
+{
+	Dragao* Dragon = (Dragao*) malloc (sizeof(Dragao));
+	
+	for (i = 0; i < qtdDragao; i++)
+    {
+    	*Dragon = dragao[i];
+        if (strcmpi(nome, dragao[i].nome) == 0)
+            return Dragon;
+    }
+    
+    return Dragon = NULL;//ta return no final da função obterDragaoPeloNome
+}
+
+int ApagarDragaoPeloCodigo(int codigo)
+{
+	int porcentagemArrays = ARRSIZEDRAGAO * 0.4;
+
+    for(i = 0; i < qtdDragao; i++)
+    {
+        if (dragao[i].codigo == codigo)
+        {
+			if (dragao[i].checarLocacao > 0)
+				return 3;
+            dragao[i] = dragao[qtdDragao-1];
+            dragao[qtdDragao - 1].codigo = 0;
+            qtdDragao--;
+			if (porcentagemArrays == qtdDragao && ARRSIZEDRAGAO > 5)
+			{
+				Dragao* ArrayMenor = realloc (dragao, (qtdDragao) * sizeof(Dragao));
+				if (ArrayMenor != NULL)
+				{
+					ARRSIZEDRAGAO = qtdDragao;
+					dragao = ArrayMenor;
+					return 2;
+				}else return 0;
+			}
+            return 1;
+        }
+    }
+    return 0;
 }
 
 

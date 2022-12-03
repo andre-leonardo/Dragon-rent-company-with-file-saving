@@ -7,13 +7,12 @@
 int ARRSIZEELEMENTO =  5;
 
 Elemento* elemento = NULL;
-int qtdElemento = 0, codigoAtualElementos = 0;
+int i, qtdElemento = 0;
 
 
 
 int inicializarElementos()
 {
-	int i;
 	elemento = (Elemento*) malloc (ARRSIZEELEMENTO * sizeof(Elemento));
     if (elemento == NULL)
 	{
@@ -57,7 +56,6 @@ int encerraElementos()
 
 int salvarElemento(Elemento element)
 {
-	int i;
     if (elemento != NULL)
     {
     	if (qtdElemento == ARRSIZEELEMENTO)
@@ -73,12 +71,6 @@ int salvarElemento(Elemento element)
 				return 0;
 			}
 		}
-		for(i = 0; i < ARRSIZEELEMENTO; i++)
-		{
-			if(elemento[i].codigo > codigoAtualElementos)//arrumar a geraÃ§Ã£o de cÃ³digo.
-				codigoAtualElementos = elemento[i].codigo;
-		}
-		element.codigo = ++codigoAtualElementos;
         elemento[qtdElemento] = element;
         qtdElemento++;
         return 1;
@@ -144,14 +136,13 @@ int atualizarElemento(char* mudanca, int m,int opcao,int codigo)
 		strcpy(elemento[i].vulnerabilidade, mudanca);
 	}
 	
-	free(element);//falta free apï¿½s chamar obterElementoPeloCodigo
+	free(element);//falta free após chamar obterElementoPeloCodigo
 	
 	return 0;
 }
 
 Elemento* obterElementoPeloNome (char* nome)
 {
-	int i;
 	Elemento* Element = (Elemento*) malloc (sizeof(Elemento));
 	
 	for (i = 0; i < qtdElemento; i++)
@@ -163,12 +154,11 @@ Elemento* obterElementoPeloNome (char* nome)
 
     }
     
-    return Element = NULL;//falta return no final da funï¿½ï¿½o obterElementoPeloNome
+    return Element = NULL;//falta return no final da função obterElementoPeloNome
 }
 
 int ApagarElementoPeloCodigo(int codigo)
 {
-	int i;
     int porcentagemArrays = ARRSIZEELEMENTO * 0.4;
 
 	for(i = 0; i < qtdElemento; i++)
