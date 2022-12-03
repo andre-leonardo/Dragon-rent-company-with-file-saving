@@ -151,6 +151,9 @@ Dragao* obterDragaoPeloNome (char* nome)
 
 int ApagarDragaoPeloCodigo(int codigo)
 {
+	Dragao* dragons = obterDragaoPeloCodigo(codigo);
+	if (dragons->checarLocacao != 0)
+		return 3;
 	int i;
 	FILE* drag_tmp;
 	int encontrado = 0;

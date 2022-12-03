@@ -130,6 +130,9 @@ Guerreiro* obterGuerreiroPeloNome (char* nome)
 
 int ApagarGuerreiroPeloCodigo(int codigo)
 {
+	Guerreiro* warriors = obterGuerreiroPeloCodigo(codigo);
+	if (warriors->checarLocacao != 0)
+		return 3;
 	int i;
 	FILE* guerr_tmp;
 	int encontrado = 0;

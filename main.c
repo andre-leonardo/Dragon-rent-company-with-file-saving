@@ -257,7 +257,7 @@ void funcaoExcluirDragao()
 	if (r==1)
 		printf("Dragao APAGADO com sucesso!\n");
 	else if (r==2)
-		printf("Dragao APAGADO com sucesso!\nARRAY DIMINUIDO\n");
+		printf("Nenhum dragao com esse codigo foi encontrado\n");
 	else if (r==3)
 		printf("Para ser apagado do sistema o dragao deve ser devolvido antes!\n");
 	else
@@ -557,7 +557,7 @@ void ApagarLocacao()
 		r = ExcluirLocacao(codigo);
 		if (r == 0)
 			printf("Nao eh possivel excluir locacoes nao devolvidas\n");
-		if (r == 1)
+		else if (r == 1)
 		printf("Nenhuma locacao com esse codigo foi encontrada\n");
 		else 
 			printf("Locacao apagada com sucesso\n");

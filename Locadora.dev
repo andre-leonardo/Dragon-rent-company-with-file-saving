@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0
-UnitCount=21
+UnitCount=17
 
 [VersionInfo]
 Major=1
@@ -150,24 +150,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit11]
-FileName=dragoes.o
-Folder=
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit12]
-FileName=elementos.o
-Folder=
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit13]
 FileName=guerr.bin
 Folder=
 Compile=0
@@ -176,7 +158,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit14]
+[Unit12]
 FileName=guerr_tmp.bin
 Folder=
 Compile=0
@@ -185,16 +167,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit15]
-FileName=guerreiros.o
-Folder=
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit16]
+[Unit13]
 FileName=Locadora.dev
 Folder=
 Compile=0
@@ -203,8 +176,36 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit17]
+[Unit14]
 FileName=Locadora.layout
+Folder=
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit15]
+FileName=Makefile.win
+Folder=
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit16]
+FileName=tempCodeRunnerFile.c
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+CompileCpp=0
+
+[Unit17]
+FileName=tempCodeRunnerFile.exe
 Folder=
 Compile=0
 Link=0
