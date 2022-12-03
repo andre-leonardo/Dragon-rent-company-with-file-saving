@@ -97,9 +97,7 @@ void alterarGuerreiros()
 	int codigo;
 	printf("Digite o codigo do guerreiro que deseja alterar: ");
 	scanf("%d", &codigo);
-	
 
-	
 	do
 	{
 	printf("\n0 - Finalizar\n1 - Alterar nome\n2 - Alterar titulo\n3 - Alterar reino\n");
@@ -162,34 +160,35 @@ void listarElementos()
 
 void listarDragoes()
 {
-	
-	drag = fopen("drago.bin", "rb");
-	if (drag == NULL)
-	{
-		exit(1);
+	int i;
+	if (QuantidadeDragoes() == 0)
+    {
+        printf("NENHUM DRAGAO CADASTRADO\n");
+    }else{
+		for (i = 0; i < QuantidadeDragoes(); i++)
+		{
+			Dragao* dragon = obterDragaoPeloIndice(i);
+			Elemento* element = obterElementoPeloCodigo(dragon->codigoElemento);
+			printf("\n%d - %s, idade: %d, elemento: %s, valor: %.2f, quantidade: %d, esta sendo locado por %d pessoas\n\n",
+				dragon->codigo, dragon->nome, dragon->idade, element->nome, 
+				dragon->valor, dragon->unidade, dragon->checarLocacao);
+			free(dragon);
+			free(element);
+		}
 	}
-	Dragao input;
-	while(fread(&input, sizeof(Dragao), 1, drag))
-		printf("\n%d - %s, idade: %d, elemento: %s, valor: %.2f, quantidade: %d, esta sendo locado por %d pessoas\n\n",
-        input.codigo, input.nome, input.idade, input.elemento, 
-		input.valor, input.unidade, input.checarLocacao);
-	fclose(drag);
-	
-            
 }
 
 void funcaoCadastroDragao()
 {
     Dragao dragon;
 	int check = 0;
-	int b, i;
+	int i;
     
     for (i = 0; i < retornaTamanhoElementos(); i++)
     {
     	Elemento* element = obterElementoPeloIndice(i);
     	if (element->codigo > 0)
 		{
-			dragon.codigo = QuantidadeDragoes() + 1;
 		
 			fflush(stdin);
 			printf("Digite o nome do dragao: ");
@@ -201,18 +200,7 @@ void funcaoCadastroDragao()
 		    listarElementos();
 		    printf("Digite o codigo do elemento do dragao: ");
 		    scanf("%d", &dragon.codigoElemento);
-		    for (b = 0; b < retornaTamanhoElementos(); b++)
-			{
-				Elemento* element = obterElementoPeloIndice(b);
-				if (dragon.codigoElemento == element->codigo)
-				{
-					printf("%s\n", element->nome);
-					strcpy(dragon.elemento, element->nome);
-					free(element);//falta free em v�rias fun��es depois de chamar obterElementoPeloIndice
-					break;
-				}
-				
-			}
+
 		    printf("Digite o valor do dragao: ");
 		    scanf("%f", &dragon.valor);
 		    
@@ -232,8 +220,6 @@ void funcaoCadastroDragao()
 		}			
 	}
 	if (check == 0) printf("CADASTRE PELO MENOS UM ELEMENTO ANTES DE CADASTRAR UM DRAGAO\n");
-    
-
 
 }
 
@@ -246,13 +232,14 @@ void funcaoPesquisarDragao()
     printf("Digite o nome do dragao: ");
 	scanf("%[^\n]s", procurado);
 	Dragao* dragon = obterDragaoPeloNome(procurado);
+	Elemento* element = obterElementoPeloCodigo(dragon->codigoElemento);
 	
 	if (dragon == NULL)
 		printf("Nenhum dragao com este nome encontrado\n");
 	else{
 		printf("O codigo do dragao eh: %d\n", dragon->codigo);
         printf("Sua idade eh: %d\n", dragon->idade);
-        printf("Seu elemento eh: %s\n", dragon->elemento);
+        printf("Seu elemento eh: %s\n", element->nome);
         printf("Seu valor eh: %f\n", dragon->valor);
         printf("Seu estoque eh: %d\n", dragon->unidade);
 	}

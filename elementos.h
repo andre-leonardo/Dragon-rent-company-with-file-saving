@@ -1,10 +1,11 @@
+#include <stdio.h>
 typedef struct {
 	int codigo;
 	char nome[30];
 	char vulnerabilidade[30];
 } Elemento;
 
-
+FILE* elem;
 int retornaTamanhoElementos();
 int inicializarElementos();
 int encerraElementos();

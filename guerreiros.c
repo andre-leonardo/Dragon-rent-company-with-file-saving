@@ -23,7 +23,7 @@ int inicializarGuerreiros()
     Guerreiro leitura;
     fclose(guerr);
     
-   	guerr = fopen("guerr.bin", "r+b");
+   	guerr = fopen("file_guerr.bin", "r+b");
    	if (guerr == NULL)
 	{
 		exit(1);
@@ -122,6 +122,7 @@ int atualizarGuerreiro(char* mudanca, int m, int opcao,int codigo)
 	free (warrior);//chamar free em DevolverLocacaoPeloCodigo e em atualizarGuerreiro
 }
 
+
 Guerreiro* obterGuerreiroPeloNome (char* nome)
 {
 	int i;
@@ -135,8 +136,7 @@ Guerreiro* obterGuerreiroPeloNome (char* nome)
 			return warrior;
 		}
 	}
-	printf("erro");
-    return	warrior;//quando chega no final da fun��o (ap�s o FOR) precisa de return
+    return	NULL;
 }
 
 int ApagarGuerreiroPeloCodigo(int codigo)
@@ -145,7 +145,7 @@ int ApagarGuerreiroPeloCodigo(int codigo)
 	FILE* guerr_tmp;
 	int encontrado = 0;
 
-	guerr_tmp = fopen("guerr_tmp.bin", "wb");
+	guerr_tmp = fopen("file_guerr_tmp.bin", "wb");
 	if (guerr_tmp == NULL)
 	{
 		exit(1);
@@ -168,9 +168,9 @@ int ApagarGuerreiroPeloCodigo(int codigo)
 	}
 	fclose(guerr_tmp);
 	fclose(guerr);
-	remove("guerr.bin");
-	rename("guerr_tmp.bin", "guerr.bin");
-	guerr = fopen("guerr.bin", "r+b");
+	remove("file_guerr.bin");
+	rename("file_guerr_tmp.bin", "file_guerr.bin");
+	guerr = fopen("file_guerr.bin", "r+b");
    	if (guerr == NULL)
 	{
 		exit(1);

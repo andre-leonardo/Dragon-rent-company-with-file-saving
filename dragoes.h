@@ -7,7 +7,6 @@ typedef struct {
 	int unidade;
 	int codigoElemento;
 	int checarLocacao;
-	char elemento[30];
 } Dragao;
 
 FILE* drag;

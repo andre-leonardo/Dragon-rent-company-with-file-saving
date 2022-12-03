@@ -13,36 +13,27 @@ int qtdElemento = 0, codigoAtualElementos = 0;
 
 int inicializarElementos()
 {
-	int i;
 	elemento = (Elemento*) malloc (ARRSIZEELEMENTO * sizeof(Elemento));
     if (elemento == NULL)
 	{
 		return 0;
 	}
 	
-    for (i = 0; i < ARRSIZEELEMENTO; i++)
-    {   	
-        elemento[i].codigo = 0;
-    }
-		elemento[0].codigo = 1;
-        strcpy(elemento[0].nome, "fogo"); 
-        strcpy(elemento[0].vulnerabilidade, "agua");
-		// elemento[1].codigo = 2;
-        // strcpy(elemento[1].nome, "agua"); 
-        // strcpy(elemento[1].vulnerabilidade, "fogo");
-		// elemento[2].codigo = 3;
-        // strcpy(elemento[2].nome, "pedra"); 
-        // strcpy(elemento[2].vulnerabilidade, "divinity original sin 2");
-		// elemento[3].codigo = 4;
-        // strcpy(elemento[3].nome, "sol"); 
-        // strcpy(elemento[3].vulnerabilidade, "entropia");
-		// elemento[4].codigo = 5;
-        // strcpy(elemento[4].nome, "metallica"); 
-        // strcpy(elemento[4].vulnerabilidade, "megadeth");
+	Elemento leitura;
+	fclose(elem);
 
-        qtdElemento = 1;
-        
-        return 1;
+	elem = fopen("file_elem.bin", "r+b");
+	if (elem == NULL)
+	{
+		exit(1);
+	}
+	while(fread(&leitura, sizeof(Elemento), 1, elem))
+	{
+		if(leitura.codigo > codigoAtualElementos)
+			codigoAtualElementos = leitura.codigo;
+		qtdElemento++;
+	}
+    return 1;
 }
 
 int retornaTamanhoElementos()
@@ -52,38 +43,19 @@ int retornaTamanhoElementos()
 
 int encerraElementos()
 {
-	free(elemento);
+	fclose(elem);
 }
 
 int salvarElemento(Elemento element)
 {
-	int i;
-    if (elemento != NULL)
-    {
-    	if (qtdElemento == ARRSIZEELEMENTO)
-    	{
-    		Elemento* elementoBKP = elemento;
-    		elemento = realloc (elemento, (qtdElemento * 2)  * sizeof(Elemento));
-    		if (elemento != NULL)
-    		{
-    			ARRSIZEELEMENTO = ARRSIZEELEMENTO *  2;
-			}
-			else {
-				elemento = elementoBKP;
-				return 0;
-			}
-		}
-		for(i = 0; i < ARRSIZEELEMENTO; i++)
-		{
-			if(elemento[i].codigo > codigoAtualElementos)//arrumar a geração de código.
-				codigoAtualElementos = elemento[i].codigo;
-		}
-		element.codigo = ++codigoAtualElementos;
-        elemento[qtdElemento] = element;
-        qtdElemento++;
-        return 1;
-	}else    
-    	return 0;
+	element.codigo = ++codigoAtualElementos;
+
+	fseek(elem, 0, SEEK_END);
+	fwrite(&element, sizeof(Elemento), 1, elem);
+
+	qtdElemento++;
+
+    return 1;
 }
 
 int QuantidadeElementos()
@@ -94,30 +66,32 @@ int QuantidadeElementos()
 Elemento* obterElementoPeloIndice(int indice)
 {
     Elemento* element = (Elemento*) malloc (sizeof(Elemento));
-	*element = elemento[indice];
-	return element;
+	fseek(elem, indice * sizeof(Elemento), SEEK_SET);
+	fread(element, sizeof(Elemento), 1, elem);
+
+	return element;;
 }
 
 Elemento* obterElementoPeloCodigo(int codigo)
 {
     int i;
-	Elemento* Element = (Elemento*) malloc (sizeof(Elemento));
-	Element->codigo = codigo;
+	Elemento* element = (Elemento*) malloc (sizeof(Elemento));
 	for(i = 0; i < qtdElemento; i++)
 	{
-		if (codigo == elemento[i].codigo)
+		fseek(elem, i * sizeof(Elemento), SEEK_SET);
+		fread(element, sizeof(Elemento), 1, elem);
+		if (element->codigo == codigo)
 		{
-			*Element = elemento[i];
-			break;
+			fwrite(element, sizeof(Elemento), 1, elem);
+			return element;
 		}
-			
 	}
-		return Element;
+	return NULL;
 }
 
 int atualizarElemento(char* mudanca, int m,int opcao,int codigo)
 {
-	int i, b, r;
+	int i;
 	Elemento* element = obterElementoPeloCodigo(codigo);
 	for(i = 0; i < qtdElemento; i++)
 	{
@@ -128,20 +102,15 @@ int atualizarElemento(char* mudanca, int m,int opcao,int codigo)
 	}
 	if (opcao == 1)
 	{
-		strcpy(elemento[i].nome, mudanca);	
-		for (b = 0; b < QuantidadeDragoes(); b++)
-		{
-			Dragao* dragon = obterDragaoPeloIndice(b);
-			if (dragon->codigoElemento == codigo) //atualiza o elemento em dragao.c caso algum esteja usando o que foi alterado
-			{
-				atualizarDragao(codigo, mudanca, m, 3, dragon->codigo);
-				break;
-			}
-		}
+		strcpy(element->nome, mudanca);
+		fseek(elem, i * sizeof(Elemento), SEEK_SET);
+		fwrite(element, sizeof(Elemento), 1, elem);
 	}
 	else if (opcao == 2)
 	{
-		strcpy(elemento[i].vulnerabilidade, mudanca);
+		strcpy(element->nome, mudanca);
+		fseek(elem, i * sizeof(Elemento), SEEK_SET);
+		fwrite(element, sizeof(Elemento), 1, elem);
 	}
 	
 	free(element);//falta free ap�s chamar obterElementoPeloCodigo
@@ -152,45 +121,55 @@ int atualizarElemento(char* mudanca, int m,int opcao,int codigo)
 Elemento* obterElementoPeloNome (char* nome)
 {
 	int i;
-	Elemento* Element = (Elemento*) malloc (sizeof(Elemento));
-	
-	for (i = 0; i < qtdElemento; i++)
-    {
-    	*Element = elemento[i];
-        Elemento* element = obterElementoPeloIndice(i);
-        if (strcmpi(nome, element->nome) == 0)
-            return Element;
-
-    }
-    
-    return Element = NULL;//falta return no final da fun��o obterElementoPeloNome
+	Elemento* element = (Elemento*) malloc (sizeof(Elemento));
+	for(i = 0; i < qtdElemento; i++)
+	{
+		fseek(elem, i * sizeof(Elemento),  SEEK_SET);
+		fread(element, sizeof(Elemento), 1, elem);
+		if (strcmpi(nome, element->nome) == 0)
+		{
+			return element;
+		}
+	}
+    return	NULL;
 }
 
 int ApagarElementoPeloCodigo(int codigo)
 {
 	int i;
-    int porcentagemArrays = ARRSIZEELEMENTO * 0.4;
+	FILE* drag_tmp;
+	int encontrado = 0;
 
+	drag_tmp = fopen("file_elem_tmp.bin", "wb");
+	if (drag_tmp == NULL)
+	{
+		exit(1);
+	}
+	Elemento element;
 	for(i = 0; i < qtdElemento; i++)
 	{
-		if (elemento[i].codigo == codigo)
+		fseek(elem, i * sizeof(Elemento),  SEEK_SET);
+		fread(&element, sizeof(Elemento), 1, elem);
+		if (element.codigo == codigo)
 		{
-			elemento[i] = elemento[qtdElemento-1];
-			elemento[qtdElemento - 1].codigo = 0;
-			qtdElemento--;
-
-			if (porcentagemArrays == qtdElemento && ARRSIZEELEMENTO > 5)
-			{
-				Elemento* ArrayMenor = realloc (elemento, (qtdElemento) * sizeof(Elemento));
-				if (ArrayMenor != NULL)
-				{
-					ARRSIZEELEMENTO = qtdElemento;
-					elemento = ArrayMenor;
-					return 2;
-				}else return 0;
-			}
-			return 1;
+			encontrado = 1;
+		}else {
+			fwrite(&element, sizeof(Elemento), 1, drag_tmp);
 		}
 	}
-	return 0;
+	if (encontrado == 0)
+	{
+		return 2;
+	}
+	fclose(drag_tmp);
+	fclose(elem);
+	remove("file_elem.bin");
+	rename("file_elem_tmp.bin", "file_elem.bin");
+	elem = fopen("file_elem.bin", "r+b");
+   	if (elem == NULL)
+	{
+		exit(1);
+	}
+	qtdElemento --;
+    return 1;
 }
