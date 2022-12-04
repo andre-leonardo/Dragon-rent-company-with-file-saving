@@ -53,6 +53,10 @@ int QuantidadeGuerreiros()
 Guerreiro* obterGuerreiroPeloIndice(int indice)
 {
 	Guerreiro* warrior = (Guerreiro*) malloc (sizeof(Guerreiro));
+	if (warrior == NULL)
+	{
+		return NULL;
+	}
 	fseek(guerr, indice * sizeof(Guerreiro),  SEEK_SET);
 	fread(warrior, sizeof(Guerreiro), 1, guerr);
 	
@@ -63,13 +67,16 @@ Guerreiro* obterGuerreiroPeloCodigo(int codigo)
 {
 	int i;
 	Guerreiro* warrior = (Guerreiro*) malloc (sizeof(Guerreiro));
+	if (warrior == NULL)
+	{
+		return NULL;
+	}
 	for (i = 0; i < qtdGuerreiro; i++)
 	{
 		fseek(guerr, i * sizeof(Guerreiro), SEEK_SET);
 		fread(warrior, sizeof(Guerreiro), 1, guerr);
 		if (warrior->codigo == codigo)
 		{
-			fwrite(warrior, sizeof(Guerreiro), 1, guerr);
 			return warrior;
 		}		
 	}
@@ -116,6 +123,9 @@ Guerreiro* obterGuerreiroPeloNome (char* nome)
 {
 	int i;
 	Guerreiro* warrior = (Guerreiro*) malloc (sizeof(Guerreiro));
+	if (warrior == NULL)
+		return NULL;
+
 	for(i = 0; i < qtdGuerreiro; i++)
 	{
 		fseek(guerr, i * sizeof(Guerreiro),  SEEK_SET);
@@ -131,6 +141,8 @@ Guerreiro* obterGuerreiroPeloNome (char* nome)
 int ApagarGuerreiroPeloCodigo(int codigo)
 {
 	Guerreiro* warriors = obterGuerreiroPeloCodigo(codigo);
+	if (warriors == NULL)
+		return NULL;
 	if (warriors->checarLocacao != 0)
 		return 3;
 	int i;
@@ -168,6 +180,7 @@ int ApagarGuerreiroPeloCodigo(int codigo)
 		exit(1);
 	}
 	qtdGuerreiro --;
+	free(warriors);
     return 1;
 }
 
@@ -176,6 +189,8 @@ int registrarLocacaoGuerr(int cod, int aumentarOuDiminuir)
 	int i;
 
 	Guerreiro* warrior = obterGuerreiroPeloCodigo(cod);
+	if (warrior == NULL)
+		return NULL;
 
 	for(i = 0; i < qtdGuerreiro; i++)
 	{
@@ -198,6 +213,7 @@ int registrarLocacaoGuerr(int cod, int aumentarOuDiminuir)
 		fseek(guerr, i * sizeof(Guerreiro), SEEK_SET);
 		fwrite(warrior, sizeof(Guerreiro), 1, guerr);	
 	}
+	return 1;
 }
 
 

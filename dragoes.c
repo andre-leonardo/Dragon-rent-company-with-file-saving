@@ -76,7 +76,6 @@ Dragao* obterDragaoPeloCodigo(int codigo)
 		fread(dragon, sizeof(Dragao), 1, drag);
 		if (dragon->codigo == codigo)
 		{
-			fwrite(dragon, sizeof(Dragao), 1, drag);
 			return dragon;
 		}
 	}
@@ -137,6 +136,10 @@ Dragao* obterDragaoPeloNome (char* nome)
 {
 	int i;
 	Dragao* dragon = (Dragao*) malloc (sizeof(Dragao));
+	if (dragon == NULL)
+	{
+		return NULL;
+	}
 	for(i = 0; i < qtdDragao; i++)
 	{
 		fseek(drag, i * sizeof(Dragao),  SEEK_SET);
@@ -152,6 +155,10 @@ Dragao* obterDragaoPeloNome (char* nome)
 int ApagarDragaoPeloCodigo(int codigo)
 {
 	Dragao* dragons = obterDragaoPeloCodigo(codigo);
+	if (dragons == NULL)
+	{
+		return NULL;
+	}
 	if (dragons->checarLocacao != 0)
 		return 3;
 	int i;
@@ -189,6 +196,7 @@ int ApagarDragaoPeloCodigo(int codigo)
 		exit(1);
 	}
 	qtdDragao --;
+	free(dragons);
     return 1;
 }
 
@@ -197,6 +205,9 @@ int registrarMudancaDrag(int qtd, int cod)//alterar o valor de unidade
 {
 	int i;
 	Dragao* dragon = (Dragao*) malloc (sizeof(Dragao));
+	if (dragon == NULL)
+		return NULL;
+
 	for (i = 0; i < qtdDragao; i++)
 	{
 		fseek(drag, i * sizeof(Dragao), SEEK_SET);
@@ -218,6 +229,9 @@ int registrarLocacaoDrag(int cod, int aumentarOuDiminuir)
 	int i;
 
 	Dragao* dragon = (Dragao*) malloc (sizeof(Dragao));
+	if (dragon == NULL)
+		return NULL;
+	
 
 	for(i = 0; i < qtdDragao; i++)
 	{
@@ -241,6 +255,7 @@ int registrarLocacaoDrag(int cod, int aumentarOuDiminuir)
 		fwrite(dragon, sizeof(Dragao), 1, drag);	
 	}
 	free(dragon);
+	return 1;
 }
 
 

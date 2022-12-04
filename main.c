@@ -22,6 +22,9 @@ void listarGuerreiros()
 		for (i = 0; i < QuantidadeGuerreiros(); i++)
 		{
 			Guerreiro* warrior = obterGuerreiroPeloIndice(i);
+			if (warrior == NULL)
+				printf("Erro de alocacao dinamica");
+			else
 			printf("\n%d - %s, titulo: %s, reino: %s, quantidade de locacoes no momento: %d\n\n",
 				warrior->codigo, warrior->nome,
 				warrior->titulo, warrior->reino, warrior->checarLocacao);
@@ -64,10 +67,13 @@ void funcaoPesquisarGuerreiro()
     printf("Digite o nome do guerreiro: ");
 	scanf("%[^\n]s", procurado);
 	Guerreiro* warrior = obterGuerreiroPeloNome(procurado);
-
-	printf("O codigo do guerreiro eh: %d\n", warrior->codigo);
-	printf("Seu titulo eh: %s\n", warrior->titulo);
-    printf("Seu reino eh: %s\n", warrior->reino);
+	if(warrior == NULL)
+		printf("Erro de alocacao dinamica\n");
+	else{
+		printf("O codigo do guerreiro eh: %d\n", warrior->codigo);
+		printf("Seu titulo eh: %s\n", warrior->titulo);
+    	printf("Seu reino eh: %s\n", warrior->reino);
+	}
 	
 	free(warrior);
 }
@@ -455,10 +461,20 @@ void listarLocacoes()
 			if (location->codigoLocacao > 0)
 			{
 				Guerreiro* warrior = obterGuerreiroPeloCodigo(location->codigoGuerreiroLocador);
-				Dragao* dragon = obterDragaoPeloCodigo(location->codigoDragaoLocado);	
-				printf("\n%d - %d unidades de %s, locado por: %s pela bagatela de %.2f dinheiros diarios | inicio da locacao: %s | fim da locacao: %s\n\n",
-				location->codigoLocacao, location->quantidadeLocada, dragon->nome, 
-				warrior->nome, location->valorDiario, location->dataInicio, location->dataFim);
+				if(warrior == NULL)
+					printf("Erro de alocacao dinamica\n");
+				else{
+					Dragao* dragon = obterDragaoPeloCodigo(location->codigoDragaoLocado);
+					if (dragon == NULL)
+					{
+						printf("Erro de alocacao dinamica\n");
+					}
+					else
+						printf("\n%d - %d unidades de %s, locado por: %s pela bagatela de %.2f dinheiros diarios | inicio da locacao: %s | fim da locacao: %s\n\n",
+							location->codigoLocacao, location->quantidadeLocada, dragon->nome, 
+							warrior->nome, location->valorDiario, location->dataInicio, location->dataFim);
+				}
+				
 				free(location);
 		    }
 		}

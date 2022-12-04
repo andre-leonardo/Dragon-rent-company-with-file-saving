@@ -73,7 +73,6 @@ Elemento* obterElementoPeloCodigo(int codigo)
 		fread(element, sizeof(Elemento), 1, elem);
 		if (element->codigo == codigo)
 		{
-			fwrite(element, sizeof(Elemento), 1, elem);
 			return element;
 		}
 	}

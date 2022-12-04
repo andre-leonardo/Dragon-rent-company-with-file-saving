@@ -114,13 +114,14 @@ Locacao* obterLocacaoPeloCodigo(int codigo)
 {
     int i;
 	Locacao* location = (Locacao*) malloc (sizeof(Locacao));
+    if (location == NULL)
+        return NULL;
 	for(i = 0; i < qtdLocacao; i++)
 	{
         fseek(loca, i * sizeof(Locacao), SEEK_SET);
         fread(location, sizeof(Locacao), 1, loca);
 		if (location->codigoLocacao == codigo)
 		{
-			fwrite(location, sizeof(Locacao), 1, loca);
 			return location;
 		}		
 	}
@@ -134,6 +135,10 @@ int DevolverLocacaoPeloCodigo(int codigo)
 {
     int i;
     Locacao* location = obterLocacaoPeloCodigo(codigo);
+    if (location == NULL)
+	{
+		return NULL;
+	}
     if(location->locacaoNaoDevolvida > 0)
     {
     Guerreiro* warrior = obterGuerreiroPeloCodigo(location->codigoGuerreiroLocador);
