@@ -97,12 +97,12 @@ void funcaoExcluirGuerreiro()
 
 void alterarGuerreiros()
 {
-	int i, opcao, r;
-	char mudanca[30];
+	int r, opcao;
 	listarGuerreiros();
 	int codigo;
 	printf("Digite o codigo do guerreiro que deseja alterar: ");
 	scanf("%d", &codigo);
+	Guerreiro* warrior = obterGuerreiroPeloCodigo(codigo);
 
 	do
 	{
@@ -119,24 +119,26 @@ void alterarGuerreiros()
 	{
 		printf("Digite o novo nome: ");
 		fflush(stdin);
-		scanf("%[^\n]s", mudanca);
-		r = atualizarGuerreiro(mudanca, 30, 1, codigo);
+		scanf("%[^\n]s", warrior->nome);
+		r = atualizarGuerreiro(warrior, codigo);
 	}
 	else if (opcao == 2)
 	{
 		printf("Digite o novo titulo: ");
 		fflush(stdin);
-		scanf("%[^\n]s", mudanca);
-		r = atualizarGuerreiro(mudanca, 30, 2, codigo);
+		scanf("%[^\n]s", warrior->titulo);
+		r = atualizarGuerreiro(warrior, codigo);
 	}
 	else if (opcao == 3)
 	{
 		printf("Digite o novo reino: ");
 		fflush(stdin);
-		scanf("%[^\n]s", mudanca);
-		r = atualizarGuerreiro(mudanca, 30, 3, codigo);
+		scanf("%[^\n]s", warrior->reino);
+		r = atualizarGuerreiro(warrior, codigo);
 	}
 	else printf("Numero invalido!n");
+	if (r == 1) printf("Informacao alterada com sucesso");
+	else printf("Erro ao alterar informacao");
 	
 			
 	} while (opcao != 0);
@@ -272,13 +274,12 @@ void funcaoExcluirDragao()
 
 void alterarDragoes()
 {
-	int i, opcao, r, mudancaInt;
-	char mudanca[30];
+	int opcao, r;
 	listarDragoes();
 	int codigo;
 	printf("Digite o codigo do dragao que deseja alterar: ");
 	scanf("%d", &codigo);
-	
+	Dragao* dragon = obterDragaoPeloCodigo(codigo);
 	do
 	{
 	printf("\n0 - Finalizar\n1 - Alterar nome\n2 - Alterar idade\n3 - Alterar elemento\n4 - Alterar valor\n5 - Alterar Unidades\n");
@@ -294,39 +295,40 @@ void alterarDragoes()
 	{
 		printf("Digite o novo nome: ");
 		fflush(stdin);
-		scanf("%[^\n]s", mudanca);
-		r = atualizarDragao(0, mudanca, 30, 1, codigo);
+		scanf("%[^\n]s", dragon->nome);
+		r = atualizarDragao(dragon, codigo);
 	}
 	else if (opcao == 2)
 	{
 		printf("Digite a nova idade: ");
-		scanf("%d", &mudancaInt);
-		r = atualizarDragao(mudancaInt, mudanca, 30, 2, codigo);
+		scanf("%d", &dragon->idade);
+		r = atualizarDragao(dragon, codigo);
 	}
 	else if (opcao == 3)
 	{
 		listarElementos();
 		printf("Digite o codigo do novo elemento: ");
-		scanf("%d", &mudancaInt);
-		if (mudancaInt > QuantidadeElementos() || mudancaInt < 0)
+		scanf("%d", &dragon->codigoElemento);
+		Elemento* element = obterElementoPeloCodigo(dragon->codigoElemento);
+		if (element == NULL)
 			r = 1;
-		else r = atualizarDragao(mudancaInt, mudanca, 30, 3, codigo);
+		else r = atualizarDragao(dragon, codigo);
 	}
 	else if (opcao == 4)
 	{
 		printf("Digite o novo valor: ");
-		scanf("%d", &mudancaInt);
-		r = atualizarDragao(mudancaInt, mudanca, 30, 4, codigo);
+		scanf("%f", &dragon->valor);
+		r = atualizarDragao(dragon, codigo);
 	}
 	else if (opcao == 5)
 	{
 		printf("Digite o novo estoque: ");
-		scanf("%d", &mudancaInt);
-		r = atualizarDragao(mudancaInt, mudanca, 30, 5, codigo);
+		scanf("%d", &dragon->unidade);
+		r = atualizarDragao(dragon, codigo);
 	}
-	else printf("Numero invalido!n");
+	else printf("Numero invalido\n");
 
-	if (r == 0) printf("Informacao alterada com sucesso");
+	if (r == 1) printf("Informacao alterada com sucesso");
 	else printf("Erro ao alterar informacao");
 	
 			
@@ -400,12 +402,12 @@ void funcaoExcluirElemento()
 
 void alterarElementos()
 {
-	int i, opcao, r;
-	char mudanca[30];
+	int opcao, r;
 	listarElementos();
 	int codigo;
 	printf("Digite o codigo do elemento que deseja alterar: ");
 	scanf("%d", &codigo);
+	Elemento* element = obterElementoPeloCodigo(codigo);
 	
 	do
 	{
@@ -422,19 +424,19 @@ void alterarElementos()
 	{
 		printf("Digite o novo nome: ");
 		fflush(stdin);
-		scanf("%[^\n]s", mudanca);
-		r = atualizarElemento(mudanca, 30, 1, codigo);
+		scanf("%[^\n]s", element->nome);
+		r = atualizarElemento(element, codigo);
 	}
 	else if (opcao == 2)
 	{
 		printf("Digite a nova vulnerabilidade: ");
 		fflush(stdin);
-		scanf("%[^\n]s", mudanca);
-		r = atualizarElemento(mudanca, 30, 2, codigo);
+		scanf("%[^\n]s", element->vulnerabilidade);
+		r = atualizarElemento(element, codigo);
 	}
 	else printf("Numero invalido!n");
 
-	if (r == 0) printf("Informacao alterada com sucesso");
+	if (r == 1) printf("Informacao alterada com sucesso");
 	else printf("Erro ao alterar informacao");
 	
 			

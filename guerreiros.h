@@ -18,6 +18,6 @@ Guerreiro* obterGuerreiroPeloIndice(int indice);
 Guerreiro* obterGuerreiroPeloCodigo(int codigo);
 Guerreiro* obterGuerreiroPeloNome (char* nome);
 int ApagarGuerreiroPeloCodigo(int codigo);
-int atualizarGuerreiro(char* mudanca, int m,int opcao,int codigo);
+int atualizarGuerreiro(Guerreiro* g,int codigo);
 int registrarLocacaoGuerr(int cod, int aumentarOuDiminuir);
 

@@ -20,7 +20,8 @@ Dragao* obterDragaoPeloIndice(int indice);
 Dragao* obterDragaoPeloCodigo(int codigo);
 Dragao* obterDragaoPeloNome (char* nome);
 int ApagarDragaoPeloCodigo(int codigo);
-int atualizarDragao(int mudancaInt, char* mudanca, int m,int opcao,int codigo);
+// int atualizarDragao(int mudancaInt, char* mudanca, int m,int opcao,int codigo);
+int atualizarDragao(Dragao* d,int codigo);
 int registrarMudancaDrag(int qtd, int cod);
 int registrarLocacaoDrag(int cod, int aumentarOuDiminuir);
 

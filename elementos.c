@@ -67,6 +67,8 @@ Elemento* obterElementoPeloCodigo(int codigo)
 {
     int i;
 	Elemento* element = (Elemento*) malloc (sizeof(Elemento));
+	if (element == NULL)
+		return NULL;
 	for(i = 0; i < qtdElemento; i++)
 	{
 		fseek(elem, i * sizeof(Elemento), SEEK_SET);
@@ -79,10 +81,12 @@ Elemento* obterElementoPeloCodigo(int codigo)
 	return NULL;
 }
 
-int atualizarElemento(char* mudanca, int m,int opcao,int codigo)
+int atualizarElemento(Elemento* e,int codigo)
 {
 	int i;
 	Elemento* element = (Elemento*) malloc (sizeof(Elemento));
+	if (element == NULL)
+		return NULL;
 	for(i = 0; i < qtdElemento; i++)
 	{
 		fseek(elem, i * sizeof(Elemento), SEEK_SET);
@@ -92,21 +96,12 @@ int atualizarElemento(char* mudanca, int m,int opcao,int codigo)
 			break;
 		}
 	}
-	if (opcao == 1)
-	{
-		strcpy(element->nome, mudanca);
-		fseek(elem, i * sizeof(Elemento), SEEK_SET);
-		fwrite(element, sizeof(Elemento), 1, elem);
-	}
-	else if (opcao == 2)
-	{
-		strcpy(element->vulnerabilidade, mudanca);
-		fseek(elem, i * sizeof(Elemento), SEEK_SET);
-		fwrite(element, sizeof(Elemento), 1, elem);
-	}
+	fseek(elem, i * sizeof(Elemento), SEEK_SET);
+	fwrite(e, sizeof(Elemento), 1, elem);
+	
 	free(element);
 	
-	return 0;
+	return 1;
 }
 
 Elemento* obterElementoPeloNome (char* nome)

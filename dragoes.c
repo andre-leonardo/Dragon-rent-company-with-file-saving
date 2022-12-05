@@ -82,10 +82,12 @@ Dragao* obterDragaoPeloCodigo(int codigo)
 	return NULL;
 }
 
-int atualizarDragao(int mudancaInt, char* mudanca, int m, int opcao,int codigo)
+int atualizarDragao(Dragao* d, int codigo)
 {
 	int i;
-	Dragao* dragon = obterDragaoPeloCodigo(codigo);
+	Dragao* dragon = (Dragao*) malloc (sizeof(Dragao));
+	if (dragon == NULL)
+		return NULL;
 	for(i = 0; i < qtdDragao; i++)
 	{
 		fseek(drag, i * sizeof(Dragao), SEEK_SET);
@@ -95,41 +97,12 @@ int atualizarDragao(int mudancaInt, char* mudanca, int m, int opcao,int codigo)
 			break;
 		}
 	}
-	if (opcao == 1)
-	{
-		strcpy(dragon->nome, mudanca);
-		fseek(drag, i * sizeof(Dragao), SEEK_SET);
-		fwrite(dragon, sizeof(Dragao), 1, drag);
-	}	
-	else if (opcao == 2)
-	{
-		dragon->idade = mudancaInt;
-		fseek(drag, i * sizeof(Dragao), SEEK_SET);
-		fwrite(dragon, sizeof(Dragao), 1, drag);
-	}
-	else if (opcao == 3)
-	{
-		Elemento* element = obterElementoPeloCodigo(mudancaInt);
-		dragon->codigoElemento = element->codigo;
-		fseek(drag, i * sizeof(Dragao), SEEK_SET);
-		fwrite(dragon, sizeof(Dragao), 1, drag);
-		free(element);//falta free ap�s chamar obterElementoPeloCodigo
-	}
-	else if (opcao == 4)
-	{
-		dragon->valor = mudancaInt;
-		fseek(drag, i * sizeof(Dragao), SEEK_SET);
-		fwrite(dragon, sizeof(Dragao), 1, drag);
-	}
-	else if (opcao == 5)
-	{
-		dragon->unidade = mudancaInt;
-		fseek(drag, i * sizeof(Dragao), SEEK_SET);
-		fwrite(dragon, sizeof(Dragao), 1, drag);
-	}
+
+	fseek(drag, i * sizeof(Dragao), SEEK_SET);
+	fwrite(d, sizeof(Dragao), 1, drag);
 		
 	free(dragon);
-	return 0;
+	return 1;
 }
 
 Dragao* obterDragaoPeloNome (char* nome)

@@ -14,5 +14,5 @@ int QuantidadeElementos();
 Elemento* obterElementoPeloIndice(int codigo);
 Elemento* obterElementoPeloCodigo(int codigo);
 Elemento* obterElementoPeloNome (char* nome);
-int atualizarElemento(char* mudanca, int m,int opcao,int codigo);
+int atualizarElemento(Elemento* e, int codigo);
 int ApagarElementoPeloCodigo(int codigo);

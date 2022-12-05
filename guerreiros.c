@@ -83,10 +83,12 @@ Guerreiro* obterGuerreiroPeloCodigo(int codigo)
 	return NULL;
 }
 
-int atualizarGuerreiro(char* mudanca, int m, int opcao,int codigo)
+int atualizarGuerreiro(Guerreiro* g,int codigo)
 {
 	int i;
-	Guerreiro* warrior = obterGuerreiroPeloCodigo(codigo);
+	Guerreiro* warrior = (Guerreiro*) malloc (sizeof(Guerreiro));
+	if (warrior == NULL)
+		return NULL;
 	for(i = 0; i < qtdGuerreiro; i++)
 	{
 		fseek(guerr, i * sizeof(Guerreiro), SEEK_SET);
@@ -96,26 +98,13 @@ int atualizarGuerreiro(char* mudanca, int m, int opcao,int codigo)
 			break;//salvar o valor de i
 		}
 	}
-	if (opcao == 1)
-	{
-		strcpy(warrior->nome, mudanca);
-		fseek(guerr, i * sizeof(Guerreiro), SEEK_SET);
-		fwrite(warrior, sizeof(Guerreiro), 1, guerr);
-	}
-	else if (opcao == 2)
-	{
-		strcpy(warrior->titulo, mudanca);
-		fseek(guerr, i * sizeof(Guerreiro), SEEK_SET);
-		fwrite(warrior, sizeof(Guerreiro), 1, guerr);
-	}
-	else if (opcao == 3)
-	{
-		strcpy(warrior->reino, mudanca);	
-		fseek(guerr, i * sizeof(Guerreiro), SEEK_SET);
-		fwrite(warrior, sizeof(Guerreiro), 1, guerr);
-	}
+	
+	fseek(guerr, i * sizeof(Guerreiro), SEEK_SET);
+	fwrite(g, sizeof(Guerreiro), 1, guerr);
+	
 		
 	free (warrior);//chamar free em DevolverLocacaoPeloCodigo e em atualizarGuerreiro
+	return 1;
 }
 
 
