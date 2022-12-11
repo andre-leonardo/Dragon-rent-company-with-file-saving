@@ -4,6 +4,8 @@
 #include <string.h>
 
 
+FILE* elem;
+
 int qtdElemento = 0, codigoAtualElementos = 0;
 
 

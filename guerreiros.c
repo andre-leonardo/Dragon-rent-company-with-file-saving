@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+FILE* guerr;
+
 int qtdGuerreiro = 0;
 int codigoAtualGuerreiros = 0;
 

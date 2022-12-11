@@ -5,7 +5,7 @@ typedef struct {
 	char vulnerabilidade[30];
 } Elemento;
 
-FILE* elem;
+
 int retornaTamanhoElementos();
 int inicializarElementos();
 int encerraElementos();

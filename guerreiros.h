@@ -7,7 +7,7 @@ typedef struct {
 	char titulo[30];
 } Guerreiro;
 
-FILE* guerr;
+
 
 
 int inicializarGuerreiros();

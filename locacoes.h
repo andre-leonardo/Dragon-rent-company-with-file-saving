@@ -9,8 +9,7 @@ typedef struct {
 	char dataInicio[30];
 	char dataFim[30];
 } Locacao;
-FILE* loca_tmp;
-FILE* loca;
+
 
 int inicializarLocacoes();
 int encerraLocacoes();

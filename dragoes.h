@@ -9,7 +9,7 @@ typedef struct {
 	int checarLocacao;
 } Dragao;
 
-FILE* drag;
+
 
 
 int inicializarDragoes();

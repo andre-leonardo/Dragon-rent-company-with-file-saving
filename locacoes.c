@@ -5,7 +5,8 @@
 #include <string.h>
 
 
-
+FILE* loca_tmp;
+FILE* loca;
 
 int qtdLocacao = 0, codigoAtualLocacoes = 0;
 
@@ -135,15 +136,19 @@ int DevolverLocacaoPeloCodigo(int codigo)
 {
     int i;
     Locacao* location = obterLocacaoPeloCodigo(codigo);
-    if (location == NULL)
-	{
-		return NULL;
-	}
+
     if(location->locacaoNaoDevolvida > 0)
     {
     Guerreiro* warrior = obterGuerreiroPeloCodigo(location->codigoGuerreiroLocador);
 
     Dragao* dragon = obterDragaoPeloCodigo(location->codigoDragaoLocado);
+    if (location == NULL || warrior == NULL || dragon == NULL)
+    {
+        free(location);
+        free(warrior);
+        free(dragon);
+        return NULL;
+    }
     dragon->unidade = dragon->unidade + location->quantidadeLocada;
     registrarMudancaDrag(dragon->unidade, dragon->codigo);
 
@@ -217,7 +222,7 @@ int ExcluirLocacao(int codigo)
     remove("file_loca.bin");
     rename("file_loca_tmp.bin", "file_loca.bin");
     loca = fopen("file_loca.bin", "r+b");
-    if (guerr == NULL)
+    if (loca == NULL)
     {
         exit(1);
     }

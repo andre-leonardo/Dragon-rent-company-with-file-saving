@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 
-
+FILE* drag;
 
 int qtdDragao = 0;
 int codigoAtualDragoes = 0;
